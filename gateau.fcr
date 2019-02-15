@@ -41,7 +41,7 @@ type REQUEST is record
     oper        : OPERATION,
     signature   : SIGNATURE,
     obj         : int,
-		isAck 			: OPERATION
+    isAck       : OPERATION
 end record
 
 type t_fifo is queue SIZE_FIFO of REQUEST
@@ -51,6 +51,7 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 //              Déclaration des fonctions
 // --------------------------------------------------------
 
+const REQ_NUL : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, obj = 0}
 
 //-----------------------------------------------------------------------
 //    Fonction : Retourne true ou false selon les droits de l'Admin
@@ -59,27 +60,27 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 //    Entree : requete de type REQUEST
 //    Retour : true ou false selon les droits
 //-----------------------------------------------------------------------
-	
+
 function hasRight_Admin (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	end;
-	return false
+    case req.target of
+        GC ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC1 ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC2 ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    end;
+    return false
 end
 
 
@@ -88,27 +89,27 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+
 function hasRight_GC_OWNER (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return false
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return false
-			end
-	end;
-	return false
+    case req.target of
+        GC ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC1 ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return false
+            end
+    |   LC2 ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return false
+            end
+    end;
+    return false
 end
 
 
@@ -118,27 +119,27 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+
 function hasRight_LC1_OWNER (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	end;
-	return false
+    case req.target of
+        GC ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC1 ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC2 ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    end;
+    return false
 end
 
 
@@ -147,27 +148,27 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+
 function hasRight_LC2_OWNER (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	end;
-	return false
+    case req.target of
+        GC ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC1 ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC2 ->
+            case req.oper of
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    end;
+    return false
 end
 
 
@@ -176,51 +177,47 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+
 function hasRight_Unknown (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	end;
-	return false
+    case req.target of
+        GC ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC1 ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC2 ->
+            case req.oper of
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    end;
+    return false
 end
 
-	
+
 //-----------------------------------------------------------------------
 //    Fonction : Retourne true ou false selon les droits
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+
 function hasRight (req : REQUEST) : bool is
 begin
-	case req.source of 
-		ADMIN     -> return (hasRight_Admin (req))
-	|	GC_OWNER  -> return (hasRight_GC_OWNER (req))
-	|	LC1_OWNER -> return (hasRight_LC1_OWNER (req))
-	|	LC2_OWNER -> return (hasRight_LC2_OWNER (req))
-	|	UNKNOWN   -> return (hasRight_Unknown (req))
-	end;
-	return false
+    case req.source of
+        ADMIN     -> return (hasRight_Admin (req))
+    |   GC_OWNER  -> return (hasRight_GC_OWNER (req))
+    |   LC1_OWNER -> return (hasRight_LC1_OWNER (req))
+    |   LC2_OWNER -> return (hasRight_LC2_OWNER (req))
+    |   UNKNOWN   -> return (hasRight_Unknown (req))
+    end;
+    return false
 end
-
-
-
-
 
 
 // --------------------------------------------------------
@@ -231,105 +228,106 @@ end
 //                       SAP
 // ######################################################
 process SAP
-	(&Ext_sap : read write t_fifo,
-	 &Sap_ext : read write t_fifo,
-	 &Int_sap :	read write t_fifo,
-	 &Sap_int : read write t_fifo,
-	 &CP_sap  : read write t_fifo,
-	 &Sap_cp  : read write t_fifo,
-	 &stage_id: ID)
+    (&Ext_sap : read write t_fifo,
+     &Sap_ext : read write t_fifo,
+     &Int_sap : read write t_fifo,
+     &Sap_int : read write t_fifo,
+     &CP_sap  : read write t_fifo,
+     &Sap_cp  : read write t_fifo,
+     &stage_id: ID)
+
 is
 
 states
-	Idle,
-	rec_from_ext,
-	rec_from_int,
-	rec_from_cp,
-	send_to_ext,
-	send_to_int,
-	send_to_cp,
-	sign
+    Idle,
+    rec_from_ext,
+    rec_from_int,
+    rec_from_cp,
+    send_to_ext,
+    send_to_int,
+    send_to_cp,
+    sign
 
 var
-	req : REQUEST
+    req : REQUEST
 
 init
-	to Idle
+    to Idle
 
 from Idle
-	if(empty Ext_sap and empty Int_sap and empty CP_sap) then 	//All fifo are empty
-		loop
-	elsif(empty Ext_sap and empty Int_sap) then									//CP fifo is not empty
-		to rec_from_cp
-	elsif(empty Ext_sap and empty CP_sap) then									//interior fifo not empty
-		to rec_from_int
-	elsif(empty Int_sap and empty CP_sap) then									//exterior fifo not empty
-		to rec_from_ext
-	end;
+    if(empty Ext_sap and empty Int_sap and empty CP_sap) then   //All fifo are empty
+        loop
+    elsif(empty Ext_sap and empty Int_sap) then                 //CP fifo is not empty
+        to rec_from_cp
+    elsif(empty Ext_sap and empty CP_sap) then                  //interior fifo not empty
+        to rec_from_int
+    elsif(empty Int_sap and empty CP_sap) then                  //exterior fifo not empty
+        to rec_from_ext
+    end;
 
 from rec_from_cp
-	req := (first CP_sap);
-	CP_sap := (dequeue CP_sap);
-	if(req.isAck = ACK) then 					//2 possibilities : either the CP acknolegded or not
-		to send_to_int
-	else
-		to send_to_ext
-	end;
+    req     := (first CP_sap);
+    CP_sap  := (dequeue CP_sap);
+    if(req.isAck = ACK) then                                    //2 possibilities : either the CP acknolegded or not
+        to send_to_int
+    else
+        to send_to_ext
+    end;
 
 from rec_from_ext
-	req := (first Ext_sap);
-	Ext_sap := (dequeue Ext_sap);
-	if(stage_id = GC) then
-		to send_to_cp
-	elsif(stage_id = Network) then
-		if(req.signature.CC_SIG = GC) then
-			to send_to_cp
-		else
-			send_to_ext
-		end;
-	elsif(stage_id = LC1) then
-		if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
-			send_to_cp
-		else
-			send_to_ext
-		end;
-	end;
+    req     := (first Ext_sap);
+    Ext_sap := (dequeue Ext_sap);
+    if(stage_id = GC) then
+        to send_to_cp
+    elsif(stage_id = Network) then
+        if(req.signature.CC_SIG = GC) then
+            to send_to_cp
+        else
+            send_to_ext
+        end;
+    elsif(stage_id = LC1) then
+        if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
+            send_to_cp
+        else
+            send_to_ext
+        end;
+    end;
 
 from rec_from_int
-	req := (first Int_sap);
-	Int_sap := (dequeue Int_sap);
-	if(stage_id = GC) then
-		if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
-			req.isAck = NACK;
-		end;
-	elsif(stage_id = Network) then
-		if(req.signature.FU_SIG <> LC1) then
-			req.isAck = NACK;
-		end;
-	end;
-	to send_to_ext
+    req     := (first Int_sap);
+    Int_sap := (dequeue Int_sap);
+    if(stage_id = GC) then
+        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
+            req.isAck = NACK;
+        end;
+    elsif(stage_id = Network) then
+        if(req.signature.FU_SIG <> LC1) then
+            req.isAck = NACK;
+        end;
+    end;
+    to send_to_ext
 
 from send_to_cp
-	if(full Sap_cp) then loop end;
-	Sap_cp := enqueue(Sap_cp, req)
-	to Idle
+    if(full Sap_cp) then loop end;
+    Sap_cp := enqueue(Sap_cp, req)
+    to Idle
 
 from send_to_int
-	if(stage_id = GC) then
-		req.signature.CC_SIG := GC;
-	elsif(stage_id = Network) then
-		req.signature.COM_SIG := Network;
-	elsif(stage_id = LC1) then
-		req.signature.FU_SIG := LC1;
-	end;
-	if(full Sap_int) then loop end;
-	Sap_int := enqueue(Sap_int, req);
-	to Idle;
+    if(stage_id = GC) then
+        req.signature.CC_SIG := GC;
+    elsif(stage_id = Network) then
+        req.signature.COM_SIG := Network;
+    elsif(stage_id = LC1) then
+        req.signature.FU_SIG := LC1;
+    end;
+    if(full Sap_int) then loop end;
+    Sap_int := enqueue(Sap_int, req);
+    to Idle;
 
 from send_to_ext
-	if(full Sap_ext) then loop end;
-	Sap_ext := enqueue(Sap_ext, req)
-	to Idle
+    if(full Sap_ext) then loop end;
+    Sap_ext := enqueue(Sap_ext, req)
+    to Idle
 
 
 
@@ -337,89 +335,229 @@ from send_to_ext
 //                    CheckPoint
 // ######################################################
 
-	
+
 process CheckPoint (&Sap_Cp : read write t_fifo,
-            	    &Cp_Sap : read write t_fifo,
-            	    &Cp_Fwl : read write t_fifo,
-            	    &Fwl_Cp : read write t_fifo)
+                    &Cp_Sap : read write t_fifo,
+                    &Cp_Fwl : read write t_fifo,
+                    &Fwl_Cp : read write t_fifo)
 
 
 process Firewall (&CP_Fwl : read write t_fifo,
-				  &Fwl_CP : read write t_fifo) is
+                  &Fwl_CP : read write t_fifo) is
 states idle, sendResponse
 
 var req : REQUEST,
 
 
-init 
-	to idle
+init
+    to idle
 
 from idle
-	if (empty CP_Fwl) then loop end;
-	req := first CP_Fwl;
-	CP_Fwl := dequeue(CP_Fwl);
-	to sendResponse
+    if (empty CP_Fwl) then loop end;
+    req := first CP_Fwl;
+    CP_Fwl := dequeue(CP_Fwl);
+    to sendResponse
 
 from sendResponse
-	if (hasRight(req) = true) then 
-		req.isAck := ACK;
-	else 
-		req.isAck := NACK;
-	end;
-	to idle
+    if (hasRight(req) = true) then
+        req.isAck := ACK;
+    else
+        req.isAck := NACK;
+    if (full Fwl_CP) then loop end;
+    Fwl_CP := enqueue(Fwl_CP, req);
+    end;
+    to idle
 
+function doCheck(req : REQUEST) : bool is
+begin
+    case req.target of
+        UNKNOWN     -> return false
+    |   GC          -> return (doCheck_GC(req))
+    |   Network     -> return (doCheck_Net(req))
+    |   LC1         -> return (doCheck_LC1(req))
+    |   LC2         -> return (doCheck_LC2(req))
+    end;
+    return false;
+end
 
+function doCheck_GC(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return true
+    |   1 -> return false
+    |   2 -> return false
+    |   3 -> return false
+    end;
+    return false;
+end
 
+function doCheck_Net(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return false
+    |   1 -> return true
+    |   2 -> return false
+    |   3 -> return false
+    end;
+    return false;
+end
 
+function doCheck_LC1(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return false
+    |   1 -> return false
+    |   2 -> return true
+    |   3 -> return false
+    end;
+    return false;
+end
 
+function doCheck_LC2(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return false
+    |   1 -> return false
+    |   2 -> return false
+    |   3 -> return true
+    end;
+    return false;
+end
 
-function doCheck(req : REQUEST)
-
-process SecurityManager(&outputSAP 	: t_fifo,
-						&inputSAP 	: t_fifo,
-						&outputAUTH : t_fifo,
-						&inputAUTH 	: t_fifo) is
+process SecurityManager(&outputSAP  : read write t_fifo,
+                        &inputSAP   : read write t_fifo,
+                        &outputAUTH : read write t_fifo,
+                        &inputAUTH  : read write t_fifo) is
 states
-	idle, check, forward
-	
+    idle, check, forward
+
+var
+    req         : REQUEST,
+    SAPorAUTH   : bool
+
+init
+    req := REQ_NUL;
+    to idle
+
+from idle
+    // FAIRE DES SELECT
+    if(empty inputSAP) then
+        loop
+    else
+        req         := first inputSAP;
+        inputSAP    := dequeue(inputSAP);
+    end
+
+    if(empty inputAUTH) then
+        loop
+    else
+        req         := first inputAUTH;
+        inputAUTH   := dequeue(inputAUTH);
+    end
+
+    to check
+
+from check
+    SAPorAUTH := doCheck(req);
+    if(SAPorAUTH = false) then
+        req.isAck := NACK;
+
+    to forward
+
+from forward
+    if(SAPorAUTH = false) then
+        if(full outputSAP) then loop end;
+        outputSAP := enqueue(outputSAP, req);
+
+    else
+        if(full outputAUTH) then loop end;
+        outputAUTH := enqueue(outputAUTH, req);
+    to idle
+
+
+
+process LC(&Net_LC : read write t_fifo,
+           &LC_net : read write t_fifo,
+           &LC_PLC1: read write t_fifo,
+           &PLC1_LC: read write t_fifo,
+           &LC_PLC2: read write t_fifo,
+           &PLC2_LC: read write t_fifo
+           )
+is
+
+states
+    idle, fwTo1, fwTo2, fwToN
+
+var
+    req : REQUEST
+
+init
+    to idle
+
+from idle
+    if(empty Net_LC and empty PLC1_LC and empty PLC2_LC) then loop end;
+    if(empty Net_LC and empty PLC1_LC) then
+      req := first PLC2_LC;
+      PLC2_LC := dequeue(PLC2_LC);
+      to fwToN
+    end;
+    if(empty Net_LC and empty PLC2_LC) then
+      req := first PLC1_LC;
+      PLC1_LC := dequeue(PLC1_LC);
+      to fwToN 
+    end;
+    req := first Net_LC;
+    Net_LC := dequeue(Net_LC);
+    if(req.target = LC1) then to fwTo1 end;
+    if(req.target = LC2) then to fwTo2 end;
+
+from fwToN
+    if(full fwToN) then loop end;
+    fwToN := enqueue(fwToN, req);
+    to idle
+
+from fwTo1
+    if(full fwTo1) then loop end;
+    fwTo1 := enqueue(fwTo1, req);
+    to idle
+
+from fwTo2
+    if(full fwTo2) then loop end;
+    fwTo2 := enqueue(fwTo2, req);
+    to idle
+
+
+
+
+process PLC(&plc_id : ID,
+			plc_obj : int,
+			&out 	: read write t_fifo,
+			&in 	: read write t_fifo)
+is
+
+states
+	idle, do, forward
+
 var
 	req : REQUEST
-	
+
 init
-	req := REQ_NUL
+	req := REQ_NUL;
 	to idle
 
 from idle
-	if(empty inputSAP) then
-		loop
-	end
-	
-	req 	:= first inputSAP;
-	input 	:= dequeue(inputSAP);
-	to check
+	if(empty in) then loop end;
+	req := first in;
+	in := dequeue(in);
+	to do
 
-from check
-	if(req.target = UNKNOWN) then
-		req.isAck := NACK;
-		
-		if(full outputSAP) then
-			loop
-		
-		else
-			outputSAP := enqueue(outputSAP, req);
-		
+from do
+	if(req.id = plc_id and req.obj = plc_obj) then
+		req.isAck := ACK;
 	else
-		to forward
+		req.isAck := NACK;
+	to forward
 
 from forward
-	outputAUTH := enqueue(outputAUTH, req);
+	out := enqueue(out, req);
 	to idle
-		
-
-
-
-process LC
-
-
-
-process PLC
