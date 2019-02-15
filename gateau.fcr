@@ -51,68 +51,68 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 // --------------------------------------------------------
 
 
-const ADMIN_WRITE_GC		 : REQUEST is { source = ADMIN     , target = GC       , oper = WRITE  , obj = 0 }
-const ADMIN_WRITE_LC1 	 : REQUEST is { source = ADMIN     , target = LC1      , oper = WRITE  , obj = 0 }
-const ADMIN_WRITE_LC2 	 : REQUEST is { source = ADMIN     , target = LC2      , oper = WRITE  , obj = 0 }
-const ADMIN_READ_GC 		 : REQUEST is { source = ADMIN     , target = GC       , oper = READ   , obj = 0 }
-const ADMIN_READ_LC1 		 : REQUEST is { source = ADMIN     , target = LC1      , oper = READ   , obj = 0 }
+const ADMIN_WRITE_GC		 : REQUEST is { source  = ADMIN     , target = GC       , oper = WRITE  , obj = 0 }
+const ADMIN_WRITE_LC1 	 : REQUEST is { source      = ADMIN     , target = LC1      , oper = WRITE  , obj = 0 }
+const ADMIN_WRITE_LC2 	 : REQUEST is { source      = ADMIN     , target = LC2      , oper = WRITE  , obj = 0 }
+const ADMIN_READ_GC 		 : REQUEST is { source  = ADMIN     , target = GC       , oper = READ   , obj = 0 }
+const ADMIN_READ_LC1 		 : REQUEST is { source  = ADMIN     , target = LC1      , oper = READ   , obj = 0 }
 const ADMIN_READ_LC2 		  : REQUEST is { source = ADMIN     , target = LC2      , oper = READ   , obj = 0 }
-const GC_OWNER_WRITE_GC	 : REQUEST is { source = GC_OWNER  , target = GC       , oper = WRITE  , obj = 0 }
-const GC_OWNER_WRITE_LC1 : REQUEST is { source = GC_OWNER  , target = LC1      , oper = WRITE  , obj = 0 }
-const GC_OWNER_WRITE_LC2 : REQUEST is { source = GC_OWNER  , target = LC2      , oper = WRITE  , obj = 0 }
-const GC_OWNER_READ_GC 	 : REQUEST is { source = GC_OWNER  , target = GC       , oper = READ   , obj = 0 }
-const GC_OWNER_READ_LC1  : REQUEST is { source = GC_OWNER  , target = LC1      , oper = READ   , obj = 0 }
-const GC_OWNER_READ_LC2  : REQUEST is { source = GC_OWNER  , target = LC2      , oper = READ   , obj = 0 }
-const LC1_OWNER_WRITE_GC : REQUEST is { source = LC1_OWNER , target = GC       , oper = WRITE  , obj = 0 }
-const LC1_OWNER_WRITE_LC1: REQUEST is { source = LC1_OWNER , target = LC1      , oper = WRITE  , obj = 0 }
-const LC1_OWNER_WRITE_LC2 	: REQUEST is { source = LC1_OWNER , target = LC2      , oper = WRITE  , obj = 0 }
-const LC1_OWNER_READ_GC 	: REQUEST is { source = LC1_OWNER , target = GC       , oper = READ   , obj = 0 }
-const LC1_OWNER_READ_LC1 	: REQUEST is { source = LC1_OWNER , target = LC1      , oper = READ   , obj = 0 }
-const LC1_OWNER_READ_LC2 	: REQUEST is { source = LC1_OWNER , target = LC2      , oper = READ   , obj = 0 }
-const LC2_OWNER_WRITE_GC 	: REQUEST is { source = LC2_OWNER , target = GC       , oper = WRITE  , obj = 0 }
-const LC2_OWNER_WRITE_LC1 	: REQUEST is { source = LC2_OWNER , target = LC1      , oper = WRITE  , obj = 0 }
-const LC2_OWNER_WRITE_LC2   : REQUEST is { source = LC2_OWNER , target = LC2      , oper = WRITE  , obj = 0 }
-const LC2_OWNER_READ_GC 	: REQUEST is { source = LC2_OWNER , target = GC       , oper = READ   , obj = 0 }
-const LC2_OWNER_READ_LC1 	: REQUEST is { source = LC2_OWNER , target = LC1      , oper = READ   , obj = 0 }
-const LC2_OWNER_READ_LC2 	: REQUEST is { source = LC2_OWNER , target = LC2      , oper = READ   , obj = 0 }
-const UNKNOWN_WRITE_GC 		: REQUEST is { source = UNKNOWN   , target = GC       , oper = WRITE  , obj = 0 }
-const UNKNOWN_WRITE_LC1 	: REQUEST is { source = UNKNOWN   , target = LC1      , oper = WRITE  , obj = 0 }
-const UNKNOWN_WRITE_LC2 	: REQUEST is { source = UNKNOWN   , target = LC2      , oper = WRITE  , obj = 0 }
-const UNKNOWN_READ_GC 		: REQUEST is { source = UNKNOWN   , target = GC       , oper = READ   , obj = 0 }
-const UNKNOWN_READ_LC1 		: REQUEST is { source = UNKNOWN   , target = LC1      , oper = READ   , obj = 0 }
-const UNKNOWN_READ_LC2 		: REQUEST is { source = UNKNOWN   , target = LC2      , oper = READ   , obj = 0 }
-const ADMIN_ACK_GC 			: REQUEST is { source = GC        , target = ADMIN    , oper = ACK    , obj = 0 }
-const ADMIN_ACK_LC1 		: REQUEST is { source = LC1       , target = ADMIN    , oper = ACK    , obj = 0 }
-const ADMIN_ACK_LC2 		: REQUEST is { source = LC2       , target = ADMIN    , oper = ACK    , obj = 0 }
-const ADMIN_NACK_GC 		: REQUEST is { source = GC        , target = ADMIN    , oper = NACK   , obj = 0 }
-const ADMIN_NACK_LC1 		: REQUEST is { source = LC1       , target = ADMIN    , oper = NACK   , obj = 0 }
-const ADMIN_NACK_LC2 		: REQUEST is { source = LC2       , target = ADMIN    , oper = NACK   , obj = 0 }
-const GC_OWNER_ACK_GC 		: REQUEST is { source = GC        , target = GC_OWNER , oper = ACK    , obj = 0 }
-const GC_OWNER_ACK_LC1 		: REQUEST is { source = LC1       , target = GC_OWNER , oper = ACK    , obj = 0 }
-const GC_OWNER_ACK_LC2 		: REQUEST is { source = LC2       , target = GC_OWNER , oper = ACK    , obj = 0 }
-const GC_OWNER_NACK_GC 		: REQUEST is { source = GC        , target = GC_OWNER , oper = NACK   , obj = 0 }
-const GC_OWNER_NACK_LC1 	: REQUEST is { source = LC1       , target = GC_OWNER , oper = NACK   , obj = 0 }
-const GC_OWNER_NACK_LC2 	: REQUEST is { source = LC2       , target = GC_OWNER , oper = NACK   , obj = 0 }
-const LC1_OWNER_ACK_GC 		: REQUEST is { source = GC        , target = LC1_OWNER, oper = ACK    , obj = 0 }
-const LC1_OWNER_ACK_LC1 	: REQUEST is { source = LC1       , target = LC1_OWNER, oper = ACK    , obj = 0 }
-const LC1_OWNER_ACK_LC2 	: REQUEST is { source = LC2       , target = LC1_OWNER, oper = ACK    , obj = 0 }
-const LC1_OWNER_NACK_GC 	: REQUEST is { source = GC        , target = LC1_OWNER, oper = NACK   , obj = 0 }
-const LC1_OWNER_NACK_LC1 	: REQUEST is { source = LC1       , target = LC1_OWNER, oper = NACK   , obj = 0 }
-const LC1_OWNER_NACK_LC2 	: REQUEST is { source = LC2       , target = LC1_OWNER, oper = NACK   , obj = 0 }
-const LC2_OWNER_ACK_GC 		: REQUEST is { source = GC        , target = LC2_OWNER, oper = ACK    , obj = 0 }
-const LC2_OWNER_ACK_LC1 	: REQUEST is { source = LC1       , target = LC2_OWNER, oper = ACK    , obj = 0 }
-const LC2_OWNER_ACK_LC2 	: REQUEST is { source = LC2       , target = LC2_OWNER, oper = ACK    , obj = 0 }
-const LC2_OWNER_NACK_GC 	: REQUEST is { source = GC        , target = LC2_OWNER, oper = NACK   , obj = 0 }
-const LC2_OWNER_NACK_LC1 	: REQUEST is { source = LC1       , target = LC2_OWNER, oper = NACK   , obj = 0 }
-const LC2_OWNER_NACK_LC2 	: REQUEST is { source = LC2       , target = LC2_OWNER, oper = NACK   , obj = 0 }
-const UNKNOWN_ACK_GC 		: REQUEST is { source = GC        , target = UNKNOWN  , oper = ACK    , obj = 0 }
-const UNKNOWN_ACK_LC1 		: REQUEST is { source = LC1       , target = UNKNOWN  , oper = ACK    , obj = 0 }
-const UNKNOWN_ACK_LC2 		: REQUEST is { source = LC2       , target = UNKNOWN  , oper = ACK    , obj = 0 }
-const UNKNOWN_NACK_GC 		: REQUEST is { source = GC        , target = UNKNOWN  , oper = NACK   , obj = 0 }
-const UNKNOWN_NACK_LC1 		: REQUEST is { source = LC1       , target = UNKNOWN  , oper = NACK   , obj = 0 }
-const UNKNOWN_NACK_LC2 		: REQUEST is { source = LC2       , target = UNKNOWN  , oper = NACK   , obj = 0 }
-const REQ_NUL 				: REQUEST is { source = ID_NUL    , target = ID_NUL   , oper = OP_NUL , obj = 0 }
-const REQ_END 				: REQUEST is { source = ID_NUL    , target = ID_END   , oper = OP_NUL , obj = 0 }
+const GC_OWNER_WRITE_GC	 : REQUEST is { source      = GC_OWNER  , target = GC       , oper = WRITE  , obj = 0 }
+const GC_OWNER_WRITE_LC1 : REQUEST is { source      = GC_OWNER  , target = LC1      , oper = WRITE  , obj = 0 }
+const GC_OWNER_WRITE_LC2 : REQUEST is { source      = GC_OWNER  , target = LC2      , oper = WRITE  , obj = 0 }
+const GC_OWNER_READ_GC 	 : REQUEST is { source      = GC_OWNER  , target = GC       , oper = READ   , obj = 0 }
+const GC_OWNER_READ_LC1  : REQUEST is { source      = GC_OWNER  , target = LC1      , oper = READ   , obj = 0 }
+const GC_OWNER_READ_LC2  : REQUEST is { source      = GC_OWNER  , target = LC2      , oper = READ   , obj = 0 }
+const LC1_OWNER_WRITE_GC : REQUEST is { source      = LC1_OWNER , target = GC       , oper = WRITE  , obj = 0 }
+const LC1_OWNER_WRITE_LC1: REQUEST is { source      = LC1_OWNER , target = LC1      , oper = WRITE  , obj = 0 }
+const LC1_OWNER_WRITE_LC2 	: REQUEST is { source   = LC1_OWNER , target = LC2      , oper = WRITE  , obj = 0 }
+const LC1_OWNER_READ_GC 	: REQUEST is { source   = LC1_OWNER , target = GC       , oper = READ   , obj = 0 }
+const LC1_OWNER_READ_LC1 	: REQUEST is { source   = LC1_OWNER , target = LC1      , oper = READ   , obj = 0 }
+const LC1_OWNER_READ_LC2 	: REQUEST is { source   = LC1_OWNER , target = LC2      , oper = READ   , obj = 0 }
+const LC2_OWNER_WRITE_GC 	: REQUEST is { source   = LC2_OWNER , target = GC       , oper = WRITE  , obj = 0 }
+const LC2_OWNER_WRITE_LC1 	: REQUEST is { source   = LC2_OWNER , target = LC1      , oper = WRITE  , obj = 0 }
+const LC2_OWNER_WRITE_LC2   : REQUEST is { source   = LC2_OWNER , target = LC2      , oper = WRITE  , obj = 0 }
+const LC2_OWNER_READ_GC 	: REQUEST is { source   = LC2_OWNER , target = GC       , oper = READ   , obj = 0 }
+const LC2_OWNER_READ_LC1 	: REQUEST is { source   = LC2_OWNER , target = LC1      , oper = READ   , obj = 0 }
+const LC2_OWNER_READ_LC2 	: REQUEST is { source   = LC2_OWNER , target = LC2      , oper = READ   , obj = 0 }
+const UNKNOWN_WRITE_GC 		: REQUEST is { source   = UNKNOWN   , target = GC       , oper = WRITE  , obj = 0 }
+const UNKNOWN_WRITE_LC1 	: REQUEST is { source   = UNKNOWN   , target = LC1      , oper = WRITE  , obj = 0 }
+const UNKNOWN_WRITE_LC2 	: REQUEST is { source   = UNKNOWN   , target = LC2      , oper = WRITE  , obj = 0 }
+const UNKNOWN_READ_GC 		: REQUEST is { source   = UNKNOWN   , target = GC       , oper = READ   , obj = 0 }
+const UNKNOWN_READ_LC1 		: REQUEST is { source   = UNKNOWN   , target = LC1      , oper = READ   , obj = 0 }
+const UNKNOWN_READ_LC2 		: REQUEST is { source   = UNKNOWN   , target = LC2      , oper = READ   , obj = 0 }
+const ADMIN_ACK_GC 			: REQUEST is { source   = GC        , target = ADMIN    , oper = ACK    , obj = 0 }
+const ADMIN_ACK_LC1 		: REQUEST is { source   = LC1       , target = ADMIN    , oper = ACK    , obj = 0 }
+const ADMIN_ACK_LC2 		: REQUEST is { source   = LC2       , target = ADMIN    , oper = ACK    , obj = 0 }
+const ADMIN_NACK_GC 		: REQUEST is { source   = GC        , target = ADMIN    , oper = NACK   , obj = 0 }
+const ADMIN_NACK_LC1 		: REQUEST is { source   = LC1       , target = ADMIN    , oper = NACK   , obj = 0 }
+const ADMIN_NACK_LC2 		: REQUEST is { source   = LC2       , target = ADMIN    , oper = NACK   , obj = 0 }
+const GC_OWNER_ACK_GC 		: REQUEST is { source   = GC        , target = GC_OWNER , oper = ACK    , obj = 0 }
+const GC_OWNER_ACK_LC1 		: REQUEST is { source   = LC1       , target = GC_OWNER , oper = ACK    , obj = 0 }
+const GC_OWNER_ACK_LC2 		: REQUEST is { source   = LC2       , target = GC_OWNER , oper = ACK    , obj = 0 }
+const GC_OWNER_NACK_GC 		: REQUEST is { source   = GC        , target = GC_OWNER , oper = NACK   , obj = 0 }
+const GC_OWNER_NACK_LC1 	: REQUEST is { source   = LC1       , target = GC_OWNER , oper = NACK   , obj = 0 }
+const GC_OWNER_NACK_LC2 	: REQUEST is { source   = LC2       , target = GC_OWNER , oper = NACK   , obj = 0 }
+const LC1_OWNER_ACK_GC 		: REQUEST is { source   = GC        , target = LC1_OWNER, oper = ACK    , obj = 0 }
+const LC1_OWNER_ACK_LC1 	: REQUEST is { source   = LC1       , target = LC1_OWNER, oper = ACK    , obj = 0 }
+const LC1_OWNER_ACK_LC2 	: REQUEST is { source   = LC2       , target = LC1_OWNER, oper = ACK    , obj = 0 }
+const LC1_OWNER_NACK_GC 	: REQUEST is { source   = GC        , target = LC1_OWNER, oper = NACK   , obj = 0 }
+const LC1_OWNER_NACK_LC1 	: REQUEST is { source   = LC1       , target = LC1_OWNER, oper = NACK   , obj = 0 }
+const LC1_OWNER_NACK_LC2 	: REQUEST is { source   = LC2       , target = LC1_OWNER, oper = NACK   , obj = 0 }
+const LC2_OWNER_ACK_GC 		: REQUEST is { source   = GC        , target = LC2_OWNER, oper = ACK    , obj = 0 }
+const LC2_OWNER_ACK_LC1 	: REQUEST is { source   = LC1       , target = LC2_OWNER, oper = ACK    , obj = 0 }
+const LC2_OWNER_ACK_LC2 	: REQUEST is { source   = LC2       , target = LC2_OWNER, oper = ACK    , obj = 0 }
+const LC2_OWNER_NACK_GC 	: REQUEST is { source   = GC        , target = LC2_OWNER, oper = NACK   , obj = 0 }
+const LC2_OWNER_NACK_LC1 	: REQUEST is { source   = LC1       , target = LC2_OWNER, oper = NACK   , obj = 0 }
+const LC2_OWNER_NACK_LC2 	: REQUEST is { source   = LC2       , target = LC2_OWNER, oper = NACK   , obj = 0 }
+const UNKNOWN_ACK_GC 		: REQUEST is { source   = GC        , target = UNKNOWN  , oper = ACK    , obj = 0 }
+const UNKNOWN_ACK_LC1 		: REQUEST is { source   = LC1       , target = UNKNOWN  , oper = ACK    , obj = 0 }
+const UNKNOWN_ACK_LC2 		: REQUEST is { source   = LC2       , target = UNKNOWN  , oper = ACK    , obj = 0 }
+const UNKNOWN_NACK_GC 		: REQUEST is { source   = GC        , target = UNKNOWN  , oper = NACK   , obj = 0 }
+const UNKNOWN_NACK_LC1 		: REQUEST is { source   = LC1       , target = UNKNOWN  , oper = NACK   , obj = 0 }
+const UNKNOWN_NACK_LC2 		: REQUEST is { source   = LC2       , target = UNKNOWN  , oper = NACK   , obj = 0 }
+const REQ_NUL 				: REQUEST is { source   = ID_NUL    , target = ID_NUL   , oper = OP_NUL , obj = 0 }
+const REQ_END 				: REQUEST is { source   = ID_NUL    , target = ID_END   , oper = OP_NUL , obj = 0 }
 
 
 // --------------------------------------------------------
@@ -221,12 +221,54 @@ from send_to_ext
 	to Idle
 
 	
+process CheckPoint (&Sap_Cp : read write t_fifo,
+            	    &Cp_Sap : read write t_fifo,
+            	    &Cp_Fwl : read write t_fifo,
+            	    &Fwl_Cp : read write t_fifo)
+
+
+process Firewall (&CP_Fwl : read write t_fifo,
+				  &Fwl_CP : read write t_fifo) is
+states idle, sendResponse
+
+var req : REQUEST
+
+init 
+	to idle
+
+from idle
+	if (empty CP_Fwl) then loop end;
+	req := first CP_Fwl;
+	CP_Fwl := dequeue(CP_Fwl);
+	to sendResponse
+
+from sendResponse
+	
+	to idle
 
 
 
 
 
-process CheckPoint
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
