@@ -60,22 +60,22 @@ const REQ_NUL : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, obj
 //    Entree : requete de type REQUEST
 //    Retour : true ou false selon les droits
 //-----------------------------------------------------------------------
-    
+
 function hasRight_Admin (req : REQUEST) : bool is
 begin
-    case req.target of 
-        GC -> 
-            case req.oper of 
+    case req.target of
+        GC ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return true
             end
-    |   LC1 -> 
-            case req.oper of 
+    |   LC1 ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return true
             end
-    |   LC2 -> 
-            case req.oper of 
+    |   LC2 ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return true
             end
@@ -89,22 +89,22 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-    
+
 function hasRight_GC_OWNER (req : REQUEST) : bool is
 begin
-    case req.target of 
-        GC -> 
-            case req.oper of 
+    case req.target of
+        GC ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return true
             end
-    |   LC1 -> 
-            case req.oper of 
+    |   LC1 ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return false
             end
-    |   LC2 -> 
-            case req.oper of 
+    |   LC2 ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return false
             end
@@ -119,22 +119,22 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-    
+
 function hasRight_LC1_OWNER (req : REQUEST) : bool is
 begin
-    case req.target of 
-        GC -> 
-            case req.oper of 
+    case req.target of
+        GC ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
-    |   LC1 -> 
-            case req.oper of 
+    |   LC1 ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return true
             end
-    |   LC2 -> 
-            case req.oper of 
+    |   LC2 ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
@@ -148,22 +148,22 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-    
+
 function hasRight_LC2_OWNER (req : REQUEST) : bool is
 begin
-    case req.target of 
-        GC -> 
-            case req.oper of 
+    case req.target of
+        GC ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
-    |   LC1 -> 
-            case req.oper of 
+    |   LC1 ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
-    |   LC2 -> 
-            case req.oper of 
+    |   LC2 ->
+            case req.oper of
                 READ  -> return true
             |   WRITE -> return true
             end
@@ -177,22 +177,22 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-    
+
 function hasRight_Unknown (req : REQUEST) : bool is
 begin
-    case req.target of 
-        GC -> 
-            case req.oper of 
+    case req.target of
+        GC ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
-    |   LC1 -> 
-            case req.oper of 
+    |   LC1 ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
-    |   LC2 -> 
-            case req.oper of 
+    |   LC2 ->
+            case req.oper of
                 READ  -> return false
             |   WRITE -> return false
             end
@@ -200,16 +200,16 @@ begin
     return false
 end
 
-    
+
 //-----------------------------------------------------------------------
 //    Fonction : Retourne true ou false selon les droits
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-    
+
 function hasRight (req : REQUEST) : bool is
 begin
-    case req.source of 
+    case req.source of
         ADMIN     -> return (hasRight_Admin (req))
     |   GC_OWNER  -> return (hasRight_GC_OWNER (req))
     |   LC1_OWNER -> return (hasRight_LC1_OWNER (req))
@@ -335,7 +335,7 @@ from send_to_ext
 //                    CheckPoint
 // ######################################################
 
-    
+
 process CheckPoint (&Sap_Cp : read write t_fifo,
                     &Cp_Sap : read write t_fifo,
                     &Cp_Fwl : read write t_fifo,
@@ -349,7 +349,7 @@ states idle, sendResponse
 var req : REQUEST,
 
 
-init 
+init
     to idle
 
 from idle
@@ -359,14 +359,14 @@ from idle
     to sendResponse
 
 from sendResponse
-	if (hasRight(req) = true) then 
-		req.isAck := ACK;
-	else 
-		req.isAck := NACK;
-	if (full Fwl_CP) then loop end;
-	Fwl_CP := enqueue(Fwl_CP, req);
-	end;
-	to idle
+    if (hasRight(req) = true) then
+        req.isAck := ACK;
+    else
+        req.isAck := NACK;
+    if (full Fwl_CP) then loop end;
+    Fwl_CP := enqueue(Fwl_CP, req);
+    end;
+    to idle
 
 function doCheck(req : REQUEST) : bool is
 begin
@@ -432,8 +432,8 @@ states
     idle, check, forward
 
 var
-    req : REQUEST,
-    SAPorAUTH : bool
+    req         : REQUEST,
+    SAPorAUTH   : bool
 
 init
     req := REQ_NUL;
@@ -466,14 +466,43 @@ from check
 
 from forward
     if(SAPorAUTH = false) then
-		if(full outputSAP) then loop end;
+        if(full outputSAP) then loop end;
         outputSAP := enqueue(outputSAP, req);
 
     else
-		if(full outputAUTH) then loop end;
+        if(full outputAUTH) then loop end;
         outputAUTH := enqueue(outputAUTH, req);
     to idle
 
-process LC
+process LC()
 
-process PLC
+process PLC(&plc_id : ID,
+			plc_obj : int,
+			&out 	: read write t_fifo,
+			&in 	: read write t_fifo)
+states
+	idle, do, forward
+
+var
+	req : REQUEST
+
+init
+	req := REQ_NUL;
+	to idle
+
+from idle
+	if(empty in) then loop end;
+	req := first in;
+	in := dequeue(in);
+	to do
+
+from do
+	if(req.id = plc_id and req.obj = plc_obj) then
+		req.isAck := ACK;
+	else
+		req.isAck := NACK;
+	to forward
+
+from forward
+	out := enqueue(out, req);
+	to idle
