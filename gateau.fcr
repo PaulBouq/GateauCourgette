@@ -120,12 +120,12 @@ const REQ_END 				: REQUEST is { source = ID_NUL    , target = ID_END   , oper =
 // --------------------------------------------------------
 
 process SAP
-	(&Ext_sap : t_fifo,
-	 &Sap_ext	: t_fifo,
-	 &Int_sap	:	t_fifo,
-	 &Sap_int	: t_fifo,
-	 &CP_sap	: t_fifo,
-	 &Sap_cp	: t_fifo,
+	(&Ext_sap : read write t_fifo,
+	 &Sap_ext	: read write t_fifo,
+	 &Int_sap	:	read write t_fifo,
+	 &Sap_int	: read write t_fifo,
+	 &CP_sap	: read write t_fifo,
+	 &Sap_cp	: read write t_fifo,
 	 &stage_id: ID)
 is
 
