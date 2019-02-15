@@ -264,7 +264,7 @@ from Idle
     elsif(empty Int_sap and empty CP_sap) then                  //exterior fifo not empty
         to rec_from_ext
     end;
-	to Idle
+    to Idle
 
 from rec_from_cp
     req     := (first CP_sap);
@@ -274,7 +274,7 @@ from rec_from_cp
     else
         to send_to_ext
     end;
-	to rec_from_cp
+    to rec_from_cp
 
 from rec_from_ext
     req     := (first Ext_sap);
@@ -287,16 +287,16 @@ from rec_from_ext
         else
             to send_to_ext
         end;
-		to rec_from_ext
+        to rec_from_ext
     elsif(stage_id = LC1) then
         if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
             to send_to_cp
         else
             to send_to_ext
         end;
-		to rec_from_ext
+        to rec_from_ext
     end;
-	to rec_from_ext
+    to rec_from_ext
 
 from rec_from_int
     req     := (first Int_sap);
@@ -305,12 +305,12 @@ from rec_from_int
         if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
             req.isAck := NACK
         end;
-		to rec_from_int
+        to rec_from_int
     elsif(stage_id = Network) then
         if(req.signature.FU_SIG <> LC1) then
             req.isAck := NACK
         end;
-		to rec_from_int
+        to rec_from_int
     end;
     to send_to_ext
 
@@ -363,7 +363,7 @@ from sendResponse
         req.isAck := ACK
     else
         req.isAck := NACK
-	end;
+    end;
     if (full Fwl_CP) then loop end;
     Fwl_CP := enqueue(Fwl_CP, req);
     to idle
@@ -411,7 +411,7 @@ begin
     end;
     return false
 end
-	
+    
 function doCheck(req : REQUEST) : bool is
 begin
     case req.target of
@@ -465,7 +465,7 @@ from check
     SAPorAUTH := doCheck(req);
     if(SAPorAUTH = false) then
         req.isAck := NACK
-	end;
+    end;
 
     to forward
 
@@ -477,7 +477,7 @@ from forward
     else
         if(full outputAUTH) then loop end;
         outputAUTH := enqueue(outputAUTH, req)
-	end;
+    end;
     to idle
 
 
@@ -519,7 +519,7 @@ from idle
     Net_LC := dequeue(Net_LC);
     if(req.target = LC1) then to fwTo1 end;
     if(req.target = LC2) then to fwTo2 end;
-	to idle
+    to idle
 
 from fwToN
     if(full LC_net) then loop end;
@@ -568,7 +568,7 @@ from dodo
         req.isAck := ACK
     else
         req.isAck := NACK
-	end;
+    end;
     to forward
 
 from forward
@@ -610,10 +610,10 @@ var
     
     LC_PLC1             : t_fifo,
     PLC1_LC             : t_fifo,
-	
+    
     LC_PLC2             : t_fifo,
     PLC2_LC             : t_fifo
-	
+    
     
 init
     GC_1                := {||};
@@ -649,25 +649,25 @@ init
     PLC2_LC             := {||}
 
 par
-	// CCtr
-	SAP(GC_1, toContext, Com_CCtr, CCtr_Com, CheckpCCtr_CCtr, CCtr_CheckpCCtr, GC)
-	||  Checkpoint(CheckpCCtr_CCtr, CCtr_CheckpCCtr, CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
-	||  Firewall(CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
-		
-	// Com
-    ||	SAP(CCtr_Com, Com_CCtr, FU_Com, Com_FU, CheckpCom_Com, Com_CheckpCom, Network)
-	||  Checkpoint(CheckpCom_Com, Com_CheckpCom, CheckpCom_fireCom, fireCom_CheckpCom)
-	||  Firewall(CheckpCom_fireCom, fireCom_CheckpCom)
-		
-	// FU
-    ||	SAP(Com_FU, FU_Com, LC_FU, FU_LC, CheckpFU_FU, FU_CheckpFU, LC1)
+    // CCtr
+    SAP(GC_1, toContext, Com_CCtr, CCtr_Com, CheckpCCtr_CCtr, CCtr_CheckpCCtr, GC)
+    ||  Checkpoint(CheckpCCtr_CCtr, CCtr_CheckpCCtr, CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+    ||  Firewall(CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+        
+    // Com
+    ||  SAP(CCtr_Com, Com_CCtr, FU_Com, Com_FU, CheckpCom_Com, Com_CheckpCom, Network)
+    ||  Checkpoint(CheckpCom_Com, Com_CheckpCom, CheckpCom_fireCom, fireCom_CheckpCom)
+    ||  Firewall(CheckpCom_fireCom, fireCom_CheckpCom)
+        
+    // FU
+    ||  SAP(Com_FU, FU_Com, LC_FU, FU_LC, CheckpFU_FU, FU_CheckpFU, LC1)
     ||  Checkpoint(CheckpFU_FU, FU_CheckpFU, CheckpFU_fireFU, fireFU_CheckpFU)
-	||  Firewall(CheckpFU_fireFU, fireFU_CheckpFU)
-	
+    ||  Firewall(CheckpFU_fireFU, fireFU_CheckpFU)
+    
     ||  LC(FU_LC, LC_FU, LC_PLC1, PLC1_LC, LC_PLC2, PLC2_LC)
-	
+    
     ||  PLC(LC1, 2, PLC1_LC, LC_PLC1)
-	||  PLC(LC2, 3, PLC2_LC, LC_PLC2)
+    ||  PLC(LC2, 3, PLC2_LC, LC_PLC2)
 end
 
 SCADA
