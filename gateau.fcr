@@ -359,14 +359,14 @@ from idle
     to sendResponse
 
 from sendResponse
-    if (hasRight(req) = true) then 
-        req.isAck := ACK;
-    else 
-        req.isAck := NACK;
-    end;
-    to idle
-
-
+	if (hasRight(req) = true) then 
+		req.isAck := ACK;
+	else 
+		req.isAck := NACK;
+	if (full Fwl_CP) then loop end;
+	Fwl_CP := enqueue(Fwl_CP, req);
+	end;
+	to idle
 
 function doCheck(req : REQUEST) : bool is
 begin
