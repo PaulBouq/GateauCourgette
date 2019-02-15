@@ -60,27 +60,27 @@ const REQ_NUL : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, obj
 //    Entree : requete de type REQUEST
 //    Retour : true ou false selon les droits
 //-----------------------------------------------------------------------
-	
+    
 function hasRight_Admin (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	end;
-	return false
+    case req.target of 
+        GC -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC1 -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC2 -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    end;
+    return false
 end
 
 
@@ -89,27 +89,27 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+    
 function hasRight_GC_OWNER (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return false
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return false
-			end
-	end;
-	return false
+    case req.target of 
+        GC -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC1 -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return false
+            end
+    |   LC2 -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return false
+            end
+    end;
+    return false
 end
 
 
@@ -119,27 +119,27 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+    
 function hasRight_LC1_OWNER (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	end;
-	return false
+    case req.target of 
+        GC -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC1 -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    |   LC2 -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    end;
+    return false
 end
 
 
@@ -148,27 +148,27 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+    
 function hasRight_LC2_OWNER (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return true
-			|	WRITE -> return true
-			end
-	end;
-	return false
+    case req.target of 
+        GC -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC1 -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC2 -> 
+            case req.oper of 
+                READ  -> return true
+            |   WRITE -> return true
+            end
+    end;
+    return false
 end
 
 
@@ -177,46 +177,46 @@ end
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+    
 function hasRight_Unknown (req : REQUEST) : bool is
 begin
-	case req.target of 
-		GC -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC1 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	|	LC2 -> 
-			case req.oper of 
-				READ  -> return false
-			|	WRITE -> return false
-			end
-	end;
-	return false
+    case req.target of 
+        GC -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC1 -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    |   LC2 -> 
+            case req.oper of 
+                READ  -> return false
+            |   WRITE -> return false
+            end
+    end;
+    return false
 end
 
-	
+    
 //-----------------------------------------------------------------------
 //    Fonction : Retourne true ou false selon les droits
 //
 //    Entree : requete de type REQUEST
 //-----------------------------------------------------------------------
-	
+    
 function hasRight (req : REQUEST) : bool is
 begin
-	case req.source of 
-		ADMIN     -> return (hasRight_Admin (req))
-	|	GC_OWNER  -> return (hasRight_GC_OWNER (req))
-	|	LC1_OWNER -> return (hasRight_LC1_OWNER (req))
-	|	LC2_OWNER -> return (hasRight_LC2_OWNER (req))
-	|	UNKNOWN   -> return (hasRight_Unknown (req))
-	end;
-	return false
+    case req.source of 
+        ADMIN     -> return (hasRight_Admin (req))
+    |   GC_OWNER  -> return (hasRight_GC_OWNER (req))
+    |   LC1_OWNER -> return (hasRight_LC1_OWNER (req))
+    |   LC2_OWNER -> return (hasRight_LC2_OWNER (req))
+    |   UNKNOWN   -> return (hasRight_Unknown (req))
+    end;
+    return false
 end
 
 
@@ -228,13 +228,13 @@ end
 //                       SAP
 // ######################################################
 process SAP
-	(&Ext_sap : read write t_fifo,
-	 &Sap_ext : read write t_fifo,
-	 &Int_sap :	read write t_fifo,
-	 &Sap_int : read write t_fifo,
-	 &CP_sap  : read write t_fifo,
-	 &Sap_cp  : read write t_fifo,
-	 &stage_id: ID)
+    (&Ext_sap : read write t_fifo,
+     &Sap_ext : read write t_fifo,
+     &Int_sap : read write t_fifo,
+     &Sap_int : read write t_fifo,
+     &CP_sap  : read write t_fifo,
+     &Sap_cp  : read write t_fifo,
+     &stage_id: ID)
 
 is
 
@@ -266,8 +266,8 @@ from Idle
     end;
 
 from rec_from_cp
-    req 	:= (first CP_sap);
-    CP_sap 	:= (dequeue CP_sap);
+    req     := (first CP_sap);
+    CP_sap  := (dequeue CP_sap);
     if(req.isAck = ACK) then                                    //2 possibilities : either the CP acknolegded or not
         to send_to_int
     else
@@ -275,7 +275,7 @@ from rec_from_cp
     end;
 
 from rec_from_ext
-    req 	:= (first Ext_sap);
+    req     := (first Ext_sap);
     Ext_sap := (dequeue Ext_sap);
     if(stage_id = GC) then
         to send_to_cp
@@ -294,7 +294,7 @@ from rec_from_ext
     end;
 
 from rec_from_int
-    req 	:= (first Int_sap);
+    req     := (first Int_sap);
     Int_sap := (dequeue Int_sap);
     if(stage_id = GC) then
         if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
@@ -325,9 +325,9 @@ from send_to_int
     to Idle;
 
 from send_to_ext
-	if(full Sap_ext) then loop end;
-	Sap_ext := enqueue(Sap_ext, req)
-	to Idle
+    if(full Sap_ext) then loop end;
+    Sap_ext := enqueue(Sap_ext, req)
+    to Idle
 
 
 
@@ -335,36 +335,36 @@ from send_to_ext
 //                    CheckPoint
 // ######################################################
 
-	
+    
 process CheckPoint (&Sap_Cp : read write t_fifo,
-            	    &Cp_Sap : read write t_fifo,
-            	    &Cp_Fwl : read write t_fifo,
-            	    &Fwl_Cp : read write t_fifo)
+                    &Cp_Sap : read write t_fifo,
+                    &Cp_Fwl : read write t_fifo,
+                    &Fwl_Cp : read write t_fifo)
 
 
 process Firewall (&CP_Fwl : read write t_fifo,
-				  &Fwl_CP : read write t_fifo) is
+                  &Fwl_CP : read write t_fifo) is
 states idle, sendResponse
 
 var req : REQUEST,
 
 
 init 
-	to idle
+    to idle
 
 from idle
-	if (empty CP_Fwl) then loop end;
-	req := first CP_Fwl;
-	CP_Fwl := dequeue(CP_Fwl);
-	to sendResponse
+    if (empty CP_Fwl) then loop end;
+    req := first CP_Fwl;
+    CP_Fwl := dequeue(CP_Fwl);
+    to sendResponse
 
 from sendResponse
-	if (hasRight(req) = true) then 
-		req.isAck := ACK;
-	else 
-		req.isAck := NACK;
-	end;
-	to idle
+    if (hasRight(req) = true) then 
+        req.isAck := ACK;
+    else 
+        req.isAck := NACK;
+    end;
+    to idle
 
 
 
@@ -440,7 +440,7 @@ init
     to idle
 
 from idle
-	// FAIRE DES SELECT
+    // FAIRE DES SELECT
     if(empty inputSAP) then
         loop
     else
@@ -466,10 +466,12 @@ from check
 
 from forward
     if(SAPorAUTH = false) then
+		if(full outputSAP) then loop end;
         outputSAP := enqueue(outputSAP, req);
 
     else
-        outputSAP := enqueue(inputSAP, req);
+		if(full outputAUTH) then loop end;
+        outputAUTH := enqueue(outputAUTH, req);
     to idle
 
 process LC
