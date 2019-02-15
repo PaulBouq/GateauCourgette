@@ -41,7 +41,7 @@ type REQUEST is record
     oper        : OPERATION,
     signature   : SIGNATURE,
     obj         : int,
-	isAck 		: OPERATION
+    isAck       : OPERATION
 end record
 
 type t_fifo is queue SIZE_FIFO of REQUEST
@@ -50,232 +50,220 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 //              Déclaration des constantes
 // --------------------------------------------------------
 
-
-const ADMIN_WRITE_GC        : REQUEST is { source = ADMIN     , target = GC       , oper = WRITE  , obj = 0 }
-const ADMIN_WRITE_LC1       : REQUEST is { source = ADMIN     , target = LC1      , oper = WRITE  , obj = 0 }
-const ADMIN_WRITE_LC2       : REQUEST is { source = ADMIN     , target = LC2      , oper = WRITE  , obj = 0 }
-const ADMIN_READ_GC         : REQUEST is { source = ADMIN     , target = GC       , oper = READ   , obj = 0 }
-const ADMIN_READ_LC1        : REQUEST is { source = ADMIN     , target = LC1      , oper = READ   , obj = 0 }
-const ADMIN_READ_LC2        : REQUEST is { source = ADMIN     , target = LC2      , oper = READ   , obj = 0 }
-const GC_OWNER_WRITE_GC     : REQUEST is { source = GC_OWNER  , target = GC       , oper = WRITE  , obj = 0 }
-const GC_OWNER_WRITE_LC1    : REQUEST is { source = GC_OWNER  , target = LC1      , oper = WRITE  , obj = 0 }
-const GC_OWNER_WRITE_LC2    : REQUEST is { source = GC_OWNER  , target = LC2      , oper = WRITE  , obj = 0 }
-const GC_OWNER_READ_GC      : REQUEST is { source = GC_OWNER  , target = GC       , oper = READ   , obj = 0 }
-const GC_OWNER_READ_LC1     : REQUEST is { source = GC_OWNER  , target = LC1      , oper = READ   , obj = 0 }
-const GC_OWNER_READ_LC2     : REQUEST is { source = GC_OWNER  , target = LC2      , oper = READ   , obj = 0 }
-const LC1_OWNER_WRITE_GC    : REQUEST is { source = LC1_OWNER , target = GC       , oper = WRITE  , obj = 0 }
-const LC1_OWNER_WRITE_LC1   : REQUEST is { source = LC1_OWNER , target = LC1      , oper = WRITE  , obj = 0 }
-const LC1_OWNER_WRITE_LC2   : REQUEST is { source = LC1_OWNER , target = LC2      , oper = WRITE  , obj = 0 }
-const LC1_OWNER_READ_GC     : REQUEST is { source = LC1_OWNER , target = GC       , oper = READ   , obj = 0 }
-const LC1_OWNER_READ_LC1    : REQUEST is { source = LC1_OWNER , target = LC1      , oper = READ   , obj = 0 }
-const LC1_OWNER_READ_LC2    : REQUEST is { source = LC1_OWNER , target = LC2      , oper = READ   , obj = 0 }
-const LC2_OWNER_WRITE_GC    : REQUEST is { source = LC2_OWNER , target = GC       , oper = WRITE  , obj = 0 }
-const LC2_OWNER_WRITE_LC1   : REQUEST is { source = LC2_OWNER , target = LC1      , oper = WRITE  , obj = 0 }
-const LC2_OWNER_WRITE_LC2   : REQUEST is { source = LC2_OWNER , target = LC2      , oper = WRITE  , obj = 0 }
-const LC2_OWNER_READ_GC     : REQUEST is { source = LC2_OWNER , target = GC       , oper = READ   , obj = 0 }
-const LC2_OWNER_READ_LC1    : REQUEST is { source = LC2_OWNER , target = LC1      , oper = READ   , obj = 0 }
-const LC2_OWNER_READ_LC2    : REQUEST is { source = LC2_OWNER , target = LC2      , oper = READ   , obj = 0 }
-const UNKNOWN_WRITE_GC      : REQUEST is { source = UNKNOWN   , target = GC       , oper = WRITE  , obj = 0 }
-const UNKNOWN_WRITE_LC1     : REQUEST is { source = UNKNOWN   , target = LC1      , oper = WRITE  , obj = 0 }
-const UNKNOWN_WRITE_LC2     : REQUEST is { source = UNKNOWN   , target = LC2      , oper = WRITE  , obj = 0 }
-const UNKNOWN_READ_GC       : REQUEST is { source = UNKNOWN   , target = GC       , oper = READ   , obj = 0 }
-const UNKNOWN_READ_LC1      : REQUEST is { source = UNKNOWN   , target = LC1      , oper = READ   , obj = 0 }
-const UNKNOWN_READ_LC2      : REQUEST is { source = UNKNOWN   , target = LC2      , oper = READ   , obj = 0 }
-const ADMIN_ACK_GC          : REQUEST is { source = GC        , target = ADMIN    , oper = ACK    , obj = 0 }
-const ADMIN_ACK_LC1         : REQUEST is { source = LC1       , target = ADMIN    , oper = ACK    , obj = 0 }
-const ADMIN_ACK_LC2         : REQUEST is { source = LC2       , target = ADMIN    , oper = ACK    , obj = 0 }
-const ADMIN_NACK_GC         : REQUEST is { source = GC        , target = ADMIN    , oper = NACK   , obj = 0 }
-const ADMIN_NACK_LC1        : REQUEST is { source = LC1       , target = ADMIN    , oper = NACK   , obj = 0 }
-const ADMIN_NACK_LC2        : REQUEST is { source = LC2       , target = ADMIN    , oper = NACK   , obj = 0 }
-const GC_OWNER_ACK_GC       : REQUEST is { source = GC        , target = GC_OWNER , oper = ACK    , obj = 0 }
-const GC_OWNER_ACK_LC1      : REQUEST is { source = LC1       , target = GC_OWNER , oper = ACK    , obj = 0 }
-const GC_OWNER_ACK_LC2      : REQUEST is { source = LC2       , target = GC_OWNER , oper = ACK    , obj = 0 }
-const GC_OWNER_NACK_GC      : REQUEST is { source = GC        , target = GC_OWNER , oper = NACK   , obj = 0 }
-const GC_OWNER_NACK_LC1     : REQUEST is { source = LC1       , target = GC_OWNER , oper = NACK   , obj = 0 }
-const GC_OWNER_NACK_LC2     : REQUEST is { source = LC2       , target = GC_OWNER , oper = NACK   , obj = 0 }
-const LC1_OWNER_ACK_GC      : REQUEST is { source = GC        , target = LC1_OWNER, oper = ACK    , obj = 0 }
-const LC1_OWNER_ACK_LC1     : REQUEST is { source = LC1       , target = LC1_OWNER, oper = ACK    , obj = 0 }
-const LC1_OWNER_ACK_LC2     : REQUEST is { source = LC2       , target = LC1_OWNER, oper = ACK    , obj = 0 }
-const LC1_OWNER_NACK_GC     : REQUEST is { source = GC        , target = LC1_OWNER, oper = NACK   , obj = 0 }
-const LC1_OWNER_NACK_LC1    : REQUEST is { source = LC1       , target = LC1_OWNER, oper = NACK   , obj = 0 }
-const LC1_OWNER_NACK_LC2    : REQUEST is { source = LC2       , target = LC1_OWNER, oper = NACK   , obj = 0 }
-const LC2_OWNER_ACK_GC      : REQUEST is { source = GC        , target = LC2_OWNER, oper = ACK    , obj = 0 }
-const LC2_OWNER_ACK_LC1     : REQUEST is { source = LC1       , target = LC2_OWNER, oper = ACK    , obj = 0 }
-const LC2_OWNER_ACK_LC2     : REQUEST is { source = LC2       , target = LC2_OWNER, oper = ACK    , obj = 0 }
-const LC2_OWNER_NACK_GC     : REQUEST is { source = GC        , target = LC2_OWNER, oper = NACK   , obj = 0 }
-const LC2_OWNER_NACK_LC1    : REQUEST is { source = LC1       , target = LC2_OWNER, oper = NACK   , obj = 0 }
-const LC2_OWNER_NACK_LC2    : REQUEST is { source = LC2       , target = LC2_OWNER, oper = NACK   , obj = 0 }
-const UNKNOWN_ACK_GC        : REQUEST is { source = GC        , target = UNKNOWN  , oper = ACK    , obj = 0 }
-const UNKNOWN_ACK_LC1       : REQUEST is { source = LC1       , target = UNKNOWN  , oper = ACK    , obj = 0 }
-const UNKNOWN_ACK_LC2       : REQUEST is { source = LC2       , target = UNKNOWN  , oper = ACK    , obj = 0 }
-const UNKNOWN_NACK_GC       : REQUEST is { source = GC        , target = UNKNOWN  , oper = NACK   , obj = 0 }
-const UNKNOWN_NACK_LC1      : REQUEST is { source = LC1       , target = UNKNOWN  , oper = NACK   , obj = 0 }
-const UNKNOWN_NACK_LC2      : REQUEST is { source = LC2       , target = UNKNOWN  , oper = NACK   , obj = 0 }
-const REQ_NUL               : REQUEST is { source = ID_NUL    , target = ID_NUL   , oper = OP_NUL , obj = 0 }
-const REQ_END               : REQUEST is { source = ID_NUL    , target = ID_END   , oper = OP_NUL , obj = 0 }
-
+const REQ_NUL : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, obj = 0}
 
 // --------------------------------------------------------
 //              Déclaration des process
 // --------------------------------------------------------
 
 process SAP
-	(&Ext_sap : read write t_fifo,
-	 &Sap_ext	: read write t_fifo,
-	 &Int_sap	:	read write t_fifo,
-	 &Sap_int	: read write t_fifo,
-	 &CP_sap	: read write t_fifo,
-	 &Sap_cp	: read write t_fifo,
-	 &stage_id: ID)
+    (&Ext_sap   : read write t_fifo,
+     &Sap_ext   : read write t_fifo,
+     &Int_sap   :   read write t_fifo,
+     &Sap_int   : read write t_fifo,
+     &CP_sap    : read write t_fifo,
+     &Sap_cp    : read write t_fifo,
+     &stage_id  : ID)
 is
 
 states
-	Idle,
-	rec_from_ext,
-	rec_from_int,
-	rec_from_cp,
-	send_to_ext,
-	send_to_int,
-	send_to_cp,
-	sign
+    Idle,
+    rec_from_ext,
+    rec_from_int,
+    rec_from_cp,
+    send_to_ext,
+    send_to_int,
+    send_to_cp,
+    sign
 
 var
-	req : REQUEST
+    req : REQUEST
 
 init
-	to Idle
+    to Idle
 
 from Idle
-	if(empty Ext_sap and empty Int_sap and empty CP_sap) then 	//All fifo are empty
-		loop
-	elsif(empty Ext_sap and empty Int_sap) then									//CP fifo is not empty
-		to rec_from_cp
-	elsif(empty Ext_sap and empty CP_sap) then									//interior fifo not empty
-		to rec_from_int
-	elsif(empty Int_sap and empty CP_sap) then									//exterior fifo not empty
-		to rec_from_ext
-	end;
+    if(empty Ext_sap and empty Int_sap and empty CP_sap) then   //All fifo are empty
+        loop
+    elsif(empty Ext_sap and empty Int_sap) then                 //CP fifo is not empty
+        to rec_from_cp
+    elsif(empty Ext_sap and empty CP_sap) then                  //interior fifo not empty
+        to rec_from_int
+    elsif(empty Int_sap and empty CP_sap) then                  //exterior fifo not empty
+        to rec_from_ext
+    end;
 
 from rec_from_cp
-	req := (first CP_sap);
-	CP_sap := (dequeue CP_sap);
-	if(req.isAck = ACK) then 					//2 possibilities : either the CP acknolegded or not
-		to send_to_int
-	else
-		to send_to_ext
-	end;
+    req 	:= (first CP_sap);
+    CP_sap 	:= (dequeue CP_sap);
+    if(req.isAck = ACK) then                                    //2 possibilities : either the CP acknolegded or not
+        to send_to_int
+    else
+        to send_to_ext
+    end;
 
 from rec_from_ext
-	req := (first Ext_sap);
-	Ext_sap := (dequeue Ext_sap);
-	if(stage_id = GC) then
-		to send_to_cp
-	elsif(stage_id = Network) then
-		if(req.signature.CC_SIG = GC) then
-			to send_to_cp
-		else
-			send_to_ext
-		end;
-	elsif(stage_id = LC1) then
-		if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
-			send_to_cp
-		else
-			send_to_ext
-		end;
-	end;
+    req 	:= (first Ext_sap);
+    Ext_sap := (dequeue Ext_sap);
+    if(stage_id = GC) then
+        to send_to_cp
+    elsif(stage_id = Network) then
+        if(req.signature.CC_SIG = GC) then
+            to send_to_cp
+        else
+            send_to_ext
+        end;
+    elsif(stage_id = LC1) then
+        if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
+            send_to_cp
+        else
+            send_to_ext
+        end;
+    end;
 
 from rec_from_int
-	req := (first Int_sap);
-	Int_sap := (dequeue Int_sap);
-	if(stage_id = GC) then
-		if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
-			req.isAck = NACK;
-		end;
-	elsif(stage_id = Network) then
-		if(req.signature.FU_SIG <> LC1) then
-			req.isAck = NACK;
-		end;
-	end;
-	to send_to_ext
+    req 	:= (first Int_sap);
+    Int_sap := (dequeue Int_sap);
+    if(stage_id = GC) then
+        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
+            req.isAck = NACK;
+        end;
+    elsif(stage_id = Network) then
+        if(req.signature.FU_SIG <> LC1) then
+            req.isAck = NACK;
+        end;
+    end;
+    to send_to_ext
 
 from send_to_cp
-	if(full Sap_cp) then loop end;
-	Sap_cp := enqueue(Sap_cp, req)
-	to Idle
+    if(full Sap_cp) then loop end;
+    Sap_cp := enqueue(Sap_cp, req)
+    to Idle
 
 from send_to_int
-	if(stage_id = GC) then
-		req.signature.CC_SIG := GC;
-	elsif(stage_id = Network) then
-		req.signature.COM_SIG := Network;
-	elsif(stage_id = LC1) then
-		req.signature.FU_SIG := LC1;
-	end;
-	if(full Sap_int) then loop end;
-	Sap_int := enqueue(Sap_int, req);
-	to Idle;
+    if(stage_id = GC) then
+        req.signature.CC_SIG := GC;
+    elsif(stage_id = Network) then
+        req.signature.COM_SIG := Network;
+    elsif(stage_id = LC1) then
+        req.signature.FU_SIG := LC1;
+    end;
+    if(full Sap_int) then loop end;
+    Sap_int := enqueue(Sap_int, req);
+    to Idle;
 
 from send_to_ext
-	if(full Sap_ext) then loop end;
-	Sap_ext := enqueue(Sap_ext, req)
-	to Idle
-
-	
-
-
-
-
+    if(full Sap_ext) then loop end;
+    Sap_ext := enqueue(Sap_ext, req)
+    to Idle
 
 process CheckPoint
 
 
-function doCheck(req : REQUEST)
+function doCheck(req : REQUEST) : bool is
+begin
+    case req.target of
+        UNKNOWN     -> return false
+    |   GC          -> return (doCheck_GC(req))
+    |   Network     -> return (doCheck_Net(req))
+    |   LC1         -> return (doCheck_LC1(req))
+    |   LC2         -> return (doCheck_LC2(req))
+    end;
+    return false;
+end
 
-process SecurityManager(&outputSAP 	: t_fifo,
-						&inputSAP 	: t_fifo,
-						&outputAUTH : t_fifo,
-						&inputAUTH 	: t_fifo) is
+function doCheck_GC(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return true
+    |   1 -> return false
+    |   2 -> return false
+    |   3 -> return false
+    end;
+    return false;
+end
+
+function doCheck_Net(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return false
+    |   1 -> return true
+    |   2 -> return false
+    |   3 -> return false
+    end;
+    return false;
+end
+
+function doCheck_LC1(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return false
+    |   1 -> return false
+    |   2 -> return true
+    |   3 -> return false
+    end;
+    return false;
+end
+
+function doCheck_LC2(req : REQUEST) : bool is
+begin
+    case req.obj of
+        0 -> return false
+    |   1 -> return false
+    |   2 -> return false
+    |   3 -> return true
+    end;
+    return false;
+end
+
+process SecurityManager(&outputSAP  : read write t_fifo,
+                        &inputSAP   : read write t_fifo,
+                        &outputAUTH : read write t_fifo,
+                        &inputAUTH  : read write t_fifo) is
 states
-	idle, check, forward
-	
+    idle, check, forward
+
 var
-	req : REQUEST
-	
+    req : REQUEST,
+    SAPorAUTH : bool
+
 init
-	req := REQ_NUL
-	to idle
+    req := REQ_NUL;
+    to idle
 
 from idle
-	if(empty inputSAP) then
-		loop
-	end
-	
-	req 	:= first inputSAP;
-	input 	:= dequeue(inputSAP);
-	to check
+	// FAIRE DES SELECT
+    if(empty inputSAP) then
+        loop
+    else
+        req         := first inputSAP;
+        inputSAP    := dequeue(inputSAP);
+    end
+
+    if(empty inputAUTH) then
+        loop
+    else
+        req         := first inputAUTH;
+        inputAUTH   := dequeue(inputAUTH);
+    end
+
+    to check
 
 from check
-	if(req.target = UNKNOWN) then
-		req.isAck := NACK;
-		
-		if(full outputSAP) then
-			loop
-		
-		else
-			outputSAP := enqueue(outputSAP, req);
-		
-	else
-		to forward
+    SAPorAUTH := doCheck(req);
+    if(SAPorAUTH = false) then
+        req.isAck := NACK;
+
+    to forward
 
 from forward
-	outputAUTH := enqueue(outputAUTH, req);
-	to idle
-		
+    if(SAPorAUTH = false) then
+        outputSAP := enqueue(outputSAP, req);
 
-
+    else
+        outputSAP := enqueue(inputSAP, req);
+    to idle
 
 process LC
-
-
 
 process PLC
