@@ -332,15 +332,8 @@ from send_to_ext
 
 
 // ######################################################
-//                    CheckPoint
+//                    Firewall
 // ######################################################
-
-
-process CheckPoint (&Sap_Cp : read write t_fifo,
-                    &Cp_Sap : read write t_fifo,
-                    &Cp_Fwl : read write t_fifo,
-                    &Fwl_Cp : read write t_fifo)
-
 
 process Firewall (&CP_Fwl : read write t_fifo,
                   &Fwl_CP : read write t_fifo) is
@@ -424,7 +417,11 @@ begin
     return false;
 end
 
-process SecurityManager(&outputSAP  : read write t_fifo,
+// ######################################################
+//                    Checkpoint
+// ######################################################
+
+process Checkpoint(&outputSAP  : read write t_fifo,
                         &inputSAP   : read write t_fifo,
                         &outputAUTH : read write t_fifo,
                         &inputAUTH  : read write t_fifo) is
@@ -475,6 +472,9 @@ from forward
     to idle
 
 
+// ######################################################
+//                         LC
+// ######################################################
 
 process LC(&Net_LC : read write t_fifo,
            &LC_net : read write t_fifo,
@@ -527,37 +527,135 @@ from fwTo2
     to idle
 
 
-
+// ######################################################
+//                        PLC
+// ######################################################
 
 process PLC(&plc_id : ID,
-			plc_obj : int,
-			&out 	: read write t_fifo,
-			&in 	: read write t_fifo)
+            plc_obj : int,
+            &out    : read write t_fifo,
+            &in     : read write t_fifo)
 is
 
 states
-	idle, do, forward
+    idle, do, forward
 
 var
-	req : REQUEST
+    req : REQUEST
 
 init
-	req := REQ_NUL;
-	to idle
+    req := REQ_NUL;
+    to idle
 
 from idle
-	if(empty in) then loop end;
-	req := first in;
-	in := dequeue(in);
-	to do
+    if(empty in) then loop end;
+    req := first in;
+    in := dequeue(in);
+    to do
 
 from do
-	if(req.id = plc_id and req.obj = plc_obj) then
-		req.isAck := ACK;
-	else
-		req.isAck := NACK;
-	to forward
+    if(req.id = plc_id and req.obj = plc_obj) then
+        req.isAck := ACK;
+    else
+        req.isAck := NACK;
+    to forward
 
 from forward
-	out := enqueue(out, req);
-	to idle
+    out := enqueue(out, req);
+    to idle
+
+// --------------------------------------------------------
+//           Déclaration des components
+// --------------------------------------------------------
+    
+component SCADA is
+
+var
+    GC_1                : t_fifo,
+    toContext           : t_fifo,
+    
+    CCtr_CheckpCCtr     : t_fifo,
+    CheckpCCtr_CCtr     : t_fifo,
+    CheckpCCtr_fireCCtr : t_fifo,
+    fireCCtr_CheckpCCtr : t_fifo,
+    
+    CCtr_Com            : t_fifo,
+    Com_CCtr            : t_fifo,
+    
+    Com_CheckpCom       : t_fifo,
+    CheckpCom_Com       : t_fifo,
+    CheckpCom_fireCom   : t_fifo,
+    fireCom_CheckpCom   : t_fifo,
+    
+    Com_FU              : t_fifo,
+    FU_Com              : t_fifo,
+    FU_CheckpFU         : t_fifo,
+    CheckpFU_FU         : t_fifo,
+    CheckpFU_fireFU     : t_fifo,
+    fireFU_CheckpFU     : t_fifo,
+    
+    FU_LC               : t_fifo,
+    LC_FU               : t_fifo,
+    
+    LC_PLC1             : t_fifo,
+    PLC1_LC             : t_fifo,
+	
+    LC_PLC2             : t_fifo,
+    PLC2_LC             : t_fifo
+	
+    
+init
+    GC_1                := {||};
+    toContext           := {||};
+    
+    CCtr_CheckpCCtr     := {||};
+    CheckpCCtr_CCtr     := {||};
+    CheckpCCtr_fireCCtr := {||};
+    fireCCtr_CheckpCCtr := {||};
+    
+    CCtr_Com            := {||};
+    Com_CCtr            := {||};
+    
+    Com_CheckpCom       := {||};
+    CheckpCom_Com       := {||};
+    CheckpCom_fireCom   := {||};
+    fireCom_CheckpCom   := {||};
+    
+    Com_FU              := {||};
+    FU_Com              := {||};
+    FU_CheckpFU         := {||};
+    CheckpFU_FU         := {||};
+    CheckpFU_fireFU     := {||};
+    fireFU_CheckpFU     := {||};
+    
+    FU_LC               := {||};
+    LC_FU               := {||};
+    
+    LC_PLC1             := {||};
+    PLC1_LC             := {||};
+                
+    LC_PLC2             := {||};
+    PLC2_LC             := {||};
+
+par
+	// CCtr
+	SAP(GC_1, toContext, Com_CCtr, CCtr_Com, CheckpCCtr_CCtr, CCtr_CheckpCCtr, GC)
+	||  Checkpoint(CheckpCCtr_CCtr, CCtr_CheckpCCtr, CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+	||  Firewall(CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+		
+	// Com
+    ||	SAP(CCtr_Com, Com_CCtr, FU_Com, Com_FU, CheckpCom_Com, Com_CheckpCom, Network)
+	||  Checkpoint(CheckpCom_Com, Com_CheckpCom, CheckpCom_fireCom, fireCom_CheckpCom)
+	||  Firewall(CheckpCom_fireCom, fireCom_CheckpCom)
+		
+	// FU
+    ||	SAP(Com_FU, FU_Com, LC_FU, FU_LC, CheckpFU_FU, FU_CheckpFU, LC1)
+    ||  Checkpoint(CheckpFU_FU, FU_CheckpFU, CheckpFU_fireFU, fireFU_CheckpFU)
+	||  Firewall(CheckpFU_fireFU, fireFU_CheckpFU)
+	
+    ||  LC(FU_LC, LC_FU, LC_PLC1, PLC1_LC, LC_PLC2, PLC2_LC)
+	
+    ||  PLC(LC1, 2, PLC1_LC, LC_PLC1)
+	||  PLC(LC2, 3, PLC2_LC, LC_PLC2)
+
+SCADA
