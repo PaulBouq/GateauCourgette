@@ -41,7 +41,7 @@ type REQUEST is record
     oper        : OPERATION,
     signature   : SIGNATURE,
     obj         : int,
-	isAck 		: OPERATION
+		isAck 			: OPERATION
 end record
 
 type t_fifo is queue SIZE_FIFO of REQUEST
