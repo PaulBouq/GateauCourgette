@@ -365,6 +365,8 @@ from sendResponse
 		req.isAck := ACK;
 	else 
 		req.isAck := NACK;
+	if (full Fwl_CP) then loop end;
+	Fwl_CP := enqueue(Fwl_CP, req);
 	end;
 	to idle
 
