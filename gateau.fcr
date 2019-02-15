@@ -46,24 +46,196 @@ end record
 
 type t_fifo is queue SIZE_FIFO of REQUEST
 
+
 // --------------------------------------------------------
-//              Déclaration des constantes
+//              Déclaration des fonctions
 // --------------------------------------------------------
 
 const REQ_NUL : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, obj = 0}
+
+//-----------------------------------------------------------------------
+//    Fonction : Retourne true ou false selon les droits de l'Admin
+//    Cette fonction implante les règles de droits d'accessibilite
+//
+//    Entree : requete de type REQUEST
+//    Retour : true ou false selon les droits
+//-----------------------------------------------------------------------
+	
+function hasRight_Admin (req : REQUEST) : bool is
+begin
+	case req.target of 
+		GC -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return true
+			end
+	|	LC1 -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return true
+			end
+	|	LC2 -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return true
+			end
+	end;
+	return false
+end
+
+
+//-----------------------------------------------------------------------
+//    Fonction : Retourne true ou false  selon les droits de GC_OWNER
+//
+//    Entree : requete de type REQUEST
+//-----------------------------------------------------------------------
+	
+function hasRight_GC_OWNER (req : REQUEST) : bool is
+begin
+	case req.target of 
+		GC -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return true
+			end
+	|	LC1 -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return false
+			end
+	|	LC2 -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return false
+			end
+	end;
+	return false
+end
+
+
+
+//-----------------------------------------------------------------------
+//    Fonction : Retourne true ou false  selon les droits de LC1_OWNER
+//
+//    Entree : requete de type REQUEST
+//-----------------------------------------------------------------------
+	
+function hasRight_LC1_OWNER (req : REQUEST) : bool is
+begin
+	case req.target of 
+		GC -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	|	LC1 -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return true
+			end
+	|	LC2 -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	end;
+	return false
+end
+
+
+//-----------------------------------------------------------------------
+//    Fonction : Retourne true ou false  selon les droits de LC2_OWNER
+//
+//    Entree : requete de type REQUEST
+//-----------------------------------------------------------------------
+	
+function hasRight_LC2_OWNER (req : REQUEST) : bool is
+begin
+	case req.target of 
+		GC -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	|	LC1 -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	|	LC2 -> 
+			case req.oper of 
+				READ  -> return true
+			|	WRITE -> return true
+			end
+	end;
+	return false
+end
+
+
+//-----------------------------------------------------------------------
+//    Fonction : Retourne true ou false selon les droits de UNKNOWN
+//
+//    Entree : requete de type REQUEST
+//-----------------------------------------------------------------------
+	
+function hasRight_Unknown (req : REQUEST) : bool is
+begin
+	case req.target of 
+		GC -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	|	LC1 -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	|	LC2 -> 
+			case req.oper of 
+				READ  -> return false
+			|	WRITE -> return false
+			end
+	end;
+	return false
+end
+
+	
+//-----------------------------------------------------------------------
+//    Fonction : Retourne true ou false selon les droits
+//
+//    Entree : requete de type REQUEST
+//-----------------------------------------------------------------------
+	
+function hasRight (req : REQUEST) : bool is
+begin
+	case req.source of 
+		ADMIN     -> return (hasRight_Admin (req))
+	|	GC_OWNER  -> return (hasRight_GC_OWNER (req))
+	|	LC1_OWNER -> return (hasRight_LC1_OWNER (req))
+	|	LC2_OWNER -> return (hasRight_LC2_OWNER (req))
+	|	UNKNOWN   -> return (hasRight_Unknown (req))
+	end;
+	return false
+end
+
 
 // --------------------------------------------------------
 //              Déclaration des process
 // --------------------------------------------------------
 
+// ######################################################
+//                       SAP
+// ######################################################
 process SAP
-    (&Ext_sap   : read write t_fifo,
-     &Sap_ext   : read write t_fifo,
-     &Int_sap   :   read write t_fifo,
-     &Sap_int   : read write t_fifo,
-     &CP_sap    : read write t_fifo,
-     &Sap_cp    : read write t_fifo,
-     &stage_id  : ID)
+	(&Ext_sap : read write t_fifo,
+	 &Sap_ext : read write t_fifo,
+	 &Int_sap :	read write t_fifo,
+	 &Sap_int : read write t_fifo,
+	 &CP_sap  : read write t_fifo,
+	 &Sap_cp  : read write t_fifo,
+	 &stage_id: ID)
+
 is
 
 states
@@ -153,11 +325,47 @@ from send_to_int
     to Idle;
 
 from send_to_ext
-    if(full Sap_ext) then loop end;
-    Sap_ext := enqueue(Sap_ext, req)
-    to Idle
+	if(full Sap_ext) then loop end;
+	Sap_ext := enqueue(Sap_ext, req)
+	to Idle
 
-process CheckPoint
+
+
+// ######################################################
+//                    CheckPoint
+// ######################################################
+
+	
+process CheckPoint (&Sap_Cp : read write t_fifo,
+            	    &Cp_Sap : read write t_fifo,
+            	    &Cp_Fwl : read write t_fifo,
+            	    &Fwl_Cp : read write t_fifo)
+
+
+process Firewall (&CP_Fwl : read write t_fifo,
+				  &Fwl_CP : read write t_fifo) is
+states idle, sendResponse
+
+var req : REQUEST,
+
+
+init 
+	to idle
+
+from idle
+	if (empty CP_Fwl) then loop end;
+	req := first CP_Fwl;
+	CP_Fwl := dequeue(CP_Fwl);
+	to sendResponse
+
+from sendResponse
+	if (hasRight(req) = true) then 
+		req.isAck := ACK;
+	else 
+		req.isAck := NACK;
+	end;
+	to idle
+
 
 
 function doCheck(req : REQUEST) : bool is
