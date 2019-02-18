@@ -19,6 +19,7 @@ type ID is union
 | LC2
 | ID_NUL
 | ID_END
+| FU
 | NUL
 end union
 
@@ -52,7 +53,9 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 // --------------------------------------------------------
 
 const SIG_NULL : SIGNATURE is {CC_SIG = NUL, COM_SIG = NUL, FU_SIG = NUL}  // Définition d'une signature vide
-const SIG_FULL : SIGNATURE is {CC_SIG = GC, COM_SIG = Network, FU_SIG = LC1} // Définition de la signature complète
+const SIG_FULL : SIGNATURE is {CC_SIG = GC, COM_SIG = Network, FU_SIG = FU} // Définition de la signature complète
+const SIG_1    : SIGNATURE is {CC_SIG = GC, COM_SIG = NUL, FU_SIG = NUL}
+
 const REQ_NUL  : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide vers ID_NUL
 const REQ_END  : REQUEST is {source = ID_NUL, target = ID_END, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide vers ID_END
 
@@ -179,6 +182,9 @@ const NACK_READ_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, 
 const NACK_READ_GC_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par GC_OWNER refusee
 const NACK_READ_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par UNKNOWN refusee
 const NACK_READ_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par ADMIN refusee
+
+const ADMIN_WRITE_NETWORK        : REQUEST is {source = ADMIN, target = Network, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = OP_NUL}
+const ACK_WRITE_NETWORK_FROM_ADMIN : REQUEST is {source = ADMIN, target = Network, oper = WRITE, signature = SIG_1, obj = 0, isAck = ACK}
 
 
 
@@ -408,12 +414,12 @@ from rec_from_cp
     CP_sap  := (dequeue CP_sap);
     if(req.target = stage_id) then
         to send_to_ext
-    elsif(req.isAck = ACK) then                                    //2 possibilities : either the CP acknolegded or not
+    elsif(req.isAck = ACK) then                           
         to send_to_int
     else
         to send_to_ext
     end;
-    to rec_from_cp
+    to Idle
 
 from rec_from_ext
     req     := (first Ext_sap);
@@ -426,32 +432,32 @@ from rec_from_ext
         else
             to send_to_ext
         end;
-        to rec_from_ext
-    elsif(stage_id = LC1) then
+        to Idle
+    elsif(stage_id = FU) then
         if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
             to send_to_cp
         else
             to send_to_ext
         end;
-        to rec_from_ext
+        to Idle
     end;
-    to rec_from_ext
+    to Idle
 
 from rec_from_int
     req     := (first Int_sap);
     Int_sap := (dequeue Int_sap);
     if(stage_id = GC) then
-        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
+        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> FU) then
             req.isAck := NACK
         end;
-        to rec_from_int
+        to send_to_ext
     elsif(stage_id = Network) then
-        if(req.signature.FU_SIG <> LC1) then
+        if(req.signature.FU_SIG <> FU) then
             req.isAck := NACK
         end;
-        to rec_from_int
+        to send_to_ext
     end;
-    to send_to_ext
+    to Idle
 
 from send_to_cp
     if(full Sap_cp) then loop end;
@@ -463,8 +469,8 @@ from send_to_int
         req.signature.CC_SIG := GC
     elsif(stage_id = Network) then
         req.signature.COM_SIG := Network
-    elsif(stage_id = LC1) then
-        req.signature.FU_SIG := LC1
+    elsif(stage_id = FU) then
+        req.signature.FU_SIG := FU
     end;
     if(full Sap_int) then loop end;
     Sap_int := enqueue(Sap_int, req);
@@ -522,7 +528,7 @@ end
 function doCheck_Net(req : REQUEST) : bool is
 begin
     case req.obj of
-        0 -> return false
+        0 -> return true
     |   1 -> return true
     |   2 -> return false
     |   3 -> return false
@@ -533,7 +539,7 @@ end
 function doCheck_LC1(req : REQUEST) : bool is
 begin
     case req.obj of
-        0 -> return false
+        0 -> return true
     |   1 -> return false
     |   2 -> return true
     |   3 -> return false
@@ -544,7 +550,7 @@ end
 function doCheck_LC2(req : REQUEST) : bool is
 begin
     case req.obj of
-        0 -> return false
+        0 -> return true
     |   1 -> return false
     |   2 -> return false
     |   3 -> return true
@@ -646,20 +652,22 @@ init
 
 from idle
     if(empty Net_LC and empty PLC1_LC and empty PLC2_LC) then loop end;
-    if(empty Net_LC and empty PLC1_LC) then
+    if((empty PLC2_LC) = false) then
       req := first PLC2_LC;
       PLC2_LC := dequeue(PLC2_LC);
       to fwToN
     end;
-    if(empty Net_LC and empty PLC2_LC) then
+    if((empty PLC1_LC) = false ) then
       req := first PLC1_LC;
       PLC1_LC := dequeue(PLC1_LC);
       to fwToN 
     end;
-    req := first Net_LC;
-    Net_LC := dequeue(Net_LC);
-    if(req.target = LC1) then to fwTo1 end;
-    if(req.target = LC2) then to fwTo2 end;
+    if((empty Net_LC) = false) then
+        req := first Net_LC;
+        Net_LC := dequeue(Net_LC);
+        if(req.target = LC1) then to fwTo1 end;
+        if(req.target = LC2) then to fwTo2 end
+    end;
     to idle
 
 from fwToN
@@ -801,7 +809,7 @@ par
     ||  Firewall(&CheckpCom_fireCom, &fireCom_CheckpCom)
         
     // FU
-    ||  SAP(&Com_FU, &FU_Com, &LC_FU, &FU_LC, &CheckpFU_FU, &FU_CheckpFU, LC1)
+    ||  SAP(&Com_FU, &FU_Com, &LC_FU, &FU_LC, &CheckpFU_FU, &FU_CheckpFU, FU)
     ||  Checkpoint(&CheckpFU_FU, &FU_CheckpFU, &CheckpFU_fireFU, &fireFU_CheckpFU)
     ||  Firewall(&CheckpFU_fireFU, &fireFU_CheckpFU)
     
