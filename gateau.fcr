@@ -274,6 +274,7 @@ from Idle
     elsif(empty Int_sap and empty CP_sap) then                  //exterior fifo not empty
         to rec_from_ext
     end;
+    to Idle
 
 from rec_from_cp
     req     := (first CP_sap);
@@ -283,6 +284,7 @@ from rec_from_cp
     else
         to send_to_ext
     end;
+    to rec_from_cp
 
 from rec_from_ext
     req     := (first Ext_sap);
@@ -293,70 +295,68 @@ from rec_from_ext
         if(req.signature.CC_SIG = GC) then
             to send_to_cp
         else
-            send_to_ext
+            to send_to_ext
         end;
+        to rec_from_ext
     elsif(stage_id = LC1) then
         if(req.signature.CC_SIG = GC and req.signature.COM_SIG = Network) then
-            send_to_cp
+            to send_to_cp
         else
-            send_to_ext
+            to send_to_ext
         end;
+        to rec_from_ext
     end;
+    to rec_from_ext
 
 from rec_from_int
     req     := (first Int_sap);
     Int_sap := (dequeue Int_sap);
     if(stage_id = GC) then
         if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> LC1) then
-            req.isAck = NACK;
+            req.isAck := NACK
         end;
+        to rec_from_int
     elsif(stage_id = Network) then
         if(req.signature.FU_SIG <> LC1) then
-            req.isAck = NACK;
+            req.isAck := NACK
         end;
+        to rec_from_int
     end;
     to send_to_ext
 
 from send_to_cp
     if(full Sap_cp) then loop end;
-    Sap_cp := enqueue(Sap_cp, req)
+    Sap_cp := enqueue(Sap_cp, req);
     to Idle
 
 from send_to_int
     if(stage_id = GC) then
-        req.signature.CC_SIG := GC;
+        req.signature.CC_SIG := GC
     elsif(stage_id = Network) then
-        req.signature.COM_SIG := Network;
+        req.signature.COM_SIG := Network
     elsif(stage_id = LC1) then
-        req.signature.FU_SIG := LC1;
+        req.signature.FU_SIG := LC1
     end;
     if(full Sap_int) then loop end;
     Sap_int := enqueue(Sap_int, req);
-    to Idle;
+    to Idle
 
 from send_to_ext
     if(full Sap_ext) then loop end;
-    Sap_ext := enqueue(Sap_ext, req)
+    Sap_ext := enqueue(Sap_ext, req);
     to Idle
 
 
 
 // ######################################################
-//                    CheckPoint
+//                    Firewall
 // ######################################################
-
-
-process CheckPoint (&Sap_Cp : read write t_fifo,
-                    &Cp_Sap : read write t_fifo,
-                    &Cp_Fwl : read write t_fifo,
-                    &Fwl_Cp : read write t_fifo)
-
 
 process Firewall (&CP_Fwl : read write t_fifo,
                   &Fwl_CP : read write t_fifo) is
 states idle, sendResponse
 
-var req : REQUEST,
+var req : REQUEST
 
 
 init
@@ -370,25 +370,13 @@ from idle
 
 from sendResponse
     if (hasRight(req) = true) then
-        req.isAck := ACK;
+        req.isAck := ACK
     else
-        req.isAck := NACK;
+        req.isAck := NACK
+    end;
     if (full Fwl_CP) then loop end;
     Fwl_CP := enqueue(Fwl_CP, req);
-    end;
     to idle
-
-function doCheck(req : REQUEST) : bool is
-begin
-    case req.target of
-        UNKNOWN     -> return false
-    |   GC          -> return (doCheck_GC(req))
-    |   Network     -> return (doCheck_Net(req))
-    |   LC1         -> return (doCheck_LC1(req))
-    |   LC2         -> return (doCheck_LC2(req))
-    end;
-    return false;
-end
 
 function doCheck_GC(req : REQUEST) : bool is
 begin
@@ -398,7 +386,7 @@ begin
     |   2 -> return false
     |   3 -> return false
     end;
-    return false;
+    return false
 end
 
 function doCheck_Net(req : REQUEST) : bool is
@@ -409,7 +397,7 @@ begin
     |   2 -> return false
     |   3 -> return false
     end;
-    return false;
+    return false
 end
 
 function doCheck_LC1(req : REQUEST) : bool is
@@ -420,7 +408,7 @@ begin
     |   2 -> return true
     |   3 -> return false
     end;
-    return false;
+    return false
 end
 
 function doCheck_LC2(req : REQUEST) : bool is
@@ -431,10 +419,26 @@ begin
     |   2 -> return false
     |   3 -> return true
     end;
-    return false;
+    return false
+end
+    
+function doCheck(req : REQUEST) : bool is
+begin
+    case req.target of
+        UNKNOWN     -> return false
+    |   GC          -> return (doCheck_GC(req))
+    |   Network     -> return (doCheck_Net(req))
+    |   LC1         -> return (doCheck_LC1(req))
+    |   LC2         -> return (doCheck_LC2(req))
+    end;
+    return false
 end
 
-process SecurityManager(&outputSAP  : read write t_fifo,
+// ######################################################
+//                    Checkpoint
+// ######################################################
+
+process Checkpoint(&outputSAP  : read write t_fifo,
                         &inputSAP   : read write t_fifo,
                         &outputAUTH : read write t_fifo,
                         &inputAUTH  : read write t_fifo) is
@@ -455,36 +459,41 @@ from idle
         loop
     else
         req         := first inputSAP;
-        inputSAP    := dequeue(inputSAP);
-    end
+        inputSAP    := dequeue(inputSAP)
+    end;
 
     if(empty inputAUTH) then
         loop
     else
         req         := first inputAUTH;
-        inputAUTH   := dequeue(inputAUTH);
-    end
+        inputAUTH   := dequeue(inputAUTH)
+    end;
 
     to check
 
 from check
     SAPorAUTH := doCheck(req);
     if(SAPorAUTH = false) then
-        req.isAck := NACK;
+        req.isAck := NACK
+    end;
 
     to forward
 
 from forward
     if(SAPorAUTH = false) then
         if(full outputSAP) then loop end;
-        outputSAP := enqueue(outputSAP, req);
+        outputSAP := enqueue(outputSAP, req)
 
     else
         if(full outputAUTH) then loop end;
-        outputAUTH := enqueue(outputAUTH, req);
+        outputAUTH := enqueue(outputAUTH, req)
+    end;
     to idle
 
 
+// ######################################################
+//                         LC
+// ######################################################
 
 process LC(&Net_LC : read write t_fifo,
            &LC_net : read write t_fifo,
@@ -520,54 +529,155 @@ from idle
     Net_LC := dequeue(Net_LC);
     if(req.target = LC1) then to fwTo1 end;
     if(req.target = LC2) then to fwTo2 end;
+    to idle
 
 from fwToN
-    if(full fwToN) then loop end;
-    fwToN := enqueue(fwToN, req);
+    if(full LC_net) then loop end;
+    LC_net := enqueue(LC_net, req);
     to idle
 
 from fwTo1
-    if(full fwTo1) then loop end;
-    fwTo1 := enqueue(fwTo1, req);
+    if(full LC_PLC1) then loop end;
+    LC_PLC1 := enqueue(LC_PLC1, req);
     to idle
 
 from fwTo2
-    if(full fwTo2) then loop end;
-    fwTo2 := enqueue(fwTo2, req);
+    if(full LC_PLC2) then loop end;
+    LC_PLC2 := enqueue(LC_PLC2, req);
     to idle
 
 
-
+// ######################################################
+//                        PLC
+// ######################################################
 
 process PLC(&plc_id : ID,
-			plc_obj : int,
-			&out 	: read write t_fifo,
-			&in 	: read write t_fifo)
+            plc_obj : int,
+            &outp   : read write t_fifo,
+            &inp    : read write t_fifo)
 is
 
 states
-	idle, do, forward
+    idle, dodo, forward
 
 var
-	req : REQUEST
+    req : REQUEST
 
 init
-	req := REQ_NUL;
-	to idle
+    req := REQ_NUL;
+    to idle
 
 from idle
-	if(empty in) then loop end;
-	req := first in;
-	in := dequeue(in);
-	to do
+    if(empty inp) then loop end;
+    req := first inp;
+    inp := dequeue(inp);
+    to dodo
 
-from do
-	if(req.id = plc_id and req.obj = plc_obj) then
-		req.isAck := ACK;
-	else
-		req.isAck := NACK;
-	to forward
+from dodo
+    if(req.id = plc_id and req.obj = plc_obj) then
+        req.isAck := ACK
+    else
+        req.isAck := NACK
+    end;
+    to forward
 
 from forward
-	out := enqueue(out, req);
-	to idle
+    outp := enqueue(outp, req);
+    to idle
+
+// --------------------------------------------------------
+//           Déclaration des components
+// --------------------------------------------------------
+    
+component SCADA is
+
+var
+    GC_1                : t_fifo,
+    toContext           : t_fifo,
+    
+    CCtr_CheckpCCtr     : t_fifo,
+    CheckpCCtr_CCtr     : t_fifo,
+    CheckpCCtr_fireCCtr : t_fifo,
+    fireCCtr_CheckpCCtr : t_fifo,
+    
+    CCtr_Com            : t_fifo,
+    Com_CCtr            : t_fifo,
+    
+    Com_CheckpCom       : t_fifo,
+    CheckpCom_Com       : t_fifo,
+    CheckpCom_fireCom   : t_fifo,
+    fireCom_CheckpCom   : t_fifo,
+    
+    Com_FU              : t_fifo,
+    FU_Com              : t_fifo,
+    FU_CheckpFU         : t_fifo,
+    CheckpFU_FU         : t_fifo,
+    CheckpFU_fireFU     : t_fifo,
+    fireFU_CheckpFU     : t_fifo,
+    
+    FU_LC               : t_fifo,
+    LC_FU               : t_fifo,
+    
+    LC_PLC1             : t_fifo,
+    PLC1_LC             : t_fifo,
+    
+    LC_PLC2             : t_fifo,
+    PLC2_LC             : t_fifo
+    
+    
+init
+    GC_1                := {||};
+    toContext           := {||};
+    
+    CCtr_CheckpCCtr     := {||};
+    CheckpCCtr_CCtr     := {||};
+    CheckpCCtr_fireCCtr := {||};
+    fireCCtr_CheckpCCtr := {||};
+    
+    CCtr_Com            := {||};
+    Com_CCtr            := {||};
+    
+    Com_CheckpCom       := {||};
+    CheckpCom_Com       := {||};
+    CheckpCom_fireCom   := {||};
+    fireCom_CheckpCom   := {||};
+    
+    Com_FU              := {||};
+    FU_Com              := {||};
+    FU_CheckpFU         := {||};
+    CheckpFU_FU         := {||};
+    CheckpFU_fireFU     := {||};
+    fireFU_CheckpFU     := {||};
+    
+    FU_LC               := {||};
+    LC_FU               := {||};
+    
+    LC_PLC1             := {||};
+    PLC1_LC             := {||};
+                
+    LC_PLC2             := {||};
+    PLC2_LC             := {||}
+
+par
+    // CCtr
+    SAP(GC_1, toContext, Com_CCtr, CCtr_Com, CheckpCCtr_CCtr, CCtr_CheckpCCtr, GC)
+    ||  Checkpoint(CheckpCCtr_CCtr, CCtr_CheckpCCtr, CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+    ||  Firewall(CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+        
+    // Com
+    ||  SAP(CCtr_Com, Com_CCtr, FU_Com, Com_FU, CheckpCom_Com, Com_CheckpCom, Network)
+    ||  Checkpoint(CheckpCom_Com, Com_CheckpCom, CheckpCom_fireCom, fireCom_CheckpCom)
+    ||  Firewall(CheckpCom_fireCom, fireCom_CheckpCom)
+        
+    // FU
+    ||  SAP(Com_FU, FU_Com, LC_FU, FU_LC, CheckpFU_FU, FU_CheckpFU, LC1)
+    ||  Checkpoint(CheckpFU_FU, FU_CheckpFU, CheckpFU_fireFU, fireFU_CheckpFU)
+    ||  Firewall(CheckpFU_fireFU, fireFU_CheckpFU)
+    
+    ||  LC(FU_LC, LC_FU, LC_PLC1, PLC1_LC, LC_PLC2, PLC2_LC)
+    
+    ||  PLC(LC1, 2, PLC1_LC, LC_PLC1)
+    ||  PLC(LC2, 3, PLC2_LC, LC_PLC2)
+end
+
+SCADA
