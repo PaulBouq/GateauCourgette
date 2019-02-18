@@ -19,6 +19,7 @@ type ID is union
 | LC2
 | ID_NUL
 | ID_END
+| NUL
 end union
 
 type OPERATION is union
@@ -45,6 +46,15 @@ type REQUEST is record
 end record
 
 type t_fifo is queue SIZE_FIFO of REQUEST
+
+// --------------------------------------------------------
+//              Déclaration des constantes
+// --------------------------------------------------------
+
+const SIG_NULL :    SIGNATURE is {CC_SIG = NUL, COM_SIG = NUL, FU_SIG = NUL}
+
+const LC1_OWNER_WRITE_LC1 : REQUEST is {source = LC1_OWNER, target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = OP_NUL}
+
 
 
 // --------------------------------------------------------
