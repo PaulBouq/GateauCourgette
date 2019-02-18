@@ -10,67 +10,43 @@
 //--------------------------------------------------
 //                 Events
 //--------------------------------------------------
-event evt_send_ADMIN_WRITE_GC is        { send ADMIN_WRITE_GC from {env}1 to {SAP}1 }
-event evt_send_ADMIN_WRITE_LC1 is       { send ADMIN_WRITE_LC1 from {env}1 to {SAP}1 }
-event evt_send_ADMIN_WRITE_LC2 is       { send ADMIN_WRITE_LC2 from {env}1 to {SAP}1 }
-event evt_send_ADMIN_READ_GC is         { send ADMIN_READ_GC from {env}1 to {SAP}1 }
-event evt_send_ADMIN_READ_LC1 is        { send ADMIN_READ_LC1 from {env}1 to {SAP}1 }
-event evt_send_ADMIN_READ_LC2 is        { send ADMIN_READ_LC2 from {env}1 to {SAP}1 }
-event evt_send_GC_OWNER_WRITE_GC is     { send GC_OWNER_WRITE_GC from {env}1 to {SAP}1 }
-event evt_send_GC_OWNER_WRITE_LC1 is    { send GC_OWNER_WRITE_LC1 from {env}1 to {SAP}1 }
-event evt_send_GC_OWNER_WRITE_LC2 is    { send GC_OWNER_WRITE_LC2 from {env}1 to {SAP}1 }
-event evt_send_GC_OWNER_READ_GC is      { send GC_OWNER_READ_GC from {env}1 to {SAP}1 }
-event evt_send_GC_OWNER_READ_LC1 is     { send GC_OWNER_READ_LC1 from {env}1 to {SAP}1 }
-event evt_send_GC_OWNER_READ_LC2 is     { send GC_OWNER_READ_LC2 from {env}1 to {SAP}1 }
-event evt_send_LC1_OWNER_WRITE_GC is    { send LC1_OWNER_WRITE_GC from {env}1 to {SAP}1 }
-event evt_send_LC1_OWNER_WRITE_LC1 is   { send LC1_OWNER_WRITE_LC1 from {env}1 to {SAP}1 }
-event evt_send_LC1_OWNER_WRITE_LC2 is   { send LC1_OWNER_WRITE_LC2 from {env}1 to {SAP}1 }
-event evt_send_LC1_OWNER_READ_GC is     { send LC1_OWNER_READ_GC from {env}1 to {SAP}1 }
-event evt_send_LC1_OWNER_READ_LC1 is    { send LC1_OWNER_READ_LC1 from {env}1 to {SAP}1 }
-event evt_send_LC1_OWNER_READ_LC2 is    { send LC1_OWNER_READ_LC2 from {env}1 to {SAP}1 }
-event evt_send_LC2_OWNER_WRITE_GC is    { send LC2_OWNER_WRITE_GC from {env}1 to {SAP}1 }
-event evt_send_LC2_OWNER_WRITE_LC1 is   { send LC2_OWNER_WRITE_LC1 from {env}1 to {SAP}1 }
-event evt_send_LC2_OWNER_WRITE_LC2 is   { send LC2_OWNER_WRITE_LC2 from {env}1 to {SAP}1 }
-event evt_send_LC2_OWNER_READ_GC is     { send LC2_OWNER_READ_GC from {env}1 to {SAP}1 }
-event evt_send_LC2_OWNER_READ_LC1 is    { send LC2_OWNER_READ_LC1 from {env}1 to {SAP}1 }
-event evt_send_LC2_OWNER_READ_LC2 is    { send LC2_OWNER_READ_LC2 from {env}1 to {SAP}1 }
-event evt_send_UNKNOWN_WRITE_GC is      { send UNKNOWN_WRITE_GC from {env}1 to {SAP}1 }
-event evt_send_UNKNOWN_WRITE_LC1 is     { send UNKNOWN_WRITE_LC1 from {env}1 to {SAP}1 }
-event evt_send_UNKNOWN_WRITE_LC2 is     { send UNKNOWN_WRITE_LC2 from {env}1 to {SAP}1 }
-event evt_send_UNKNOWN_READ_GC is       { send UNKNOWN_READ_GC from {env}1 to {SAP}1 }
-event evt_send_UNKNOWN_READ_LC1 is      { send UNKNOWN_READ_LC1 from {env}1 to {SAP}1 }
-event evt_send_UNKNOWN_READ_LC2 is      { send UNKNOWN_READ_LC2 from {env}1 to {SAP}1 }
+event evt_send_ADMIN_WRITE_GC is        { send ADMIN_WRITE_GC from {env}1 to {GC}1 }
+event evt_send_ADMIN_WRITE_LC1 is       { send ADMIN_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_ADMIN_WRITE_LC2 is       { send ADMIN_WRITE_LC2 from {env}1 to {GC}1 }
+event evt_send_ADMIN_READ_GC is         { send ADMIN_READ_GC from {env}1 to {GC}1 }
+event evt_send_ADMIN_READ_LC1 is        { send ADMIN_READ_LC1 from {env}1 to {GC}1 }
+event evt_send_ADMIN_READ_LC2 is        { send ADMIN_READ_LC2 from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_WRITE_GC is     { send GC_OWNER_WRITE_GC from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_WRITE_LC1 is    { send GC_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_WRITE_LC2 is    { send GC_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_READ_GC is      { send GC_OWNER_READ_GC from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_READ_LC1 is     { send GC_OWNER_READ_LC1 from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_READ_LC2 is     { send GC_OWNER_READ_LC2 from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_WRITE_GC is    { send LC1_OWNER_WRITE_GC from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_WRITE_LC1 is   { send LC1_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_WRITE_LC2 is   { send LC1_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_READ_GC is     { send LC1_OWNER_READ_GC from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_READ_LC1 is    { send LC1_OWNER_READ_LC1 from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_READ_LC2 is    { send LC1_OWNER_READ_LC2 from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_WRITE_GC is    { send LC2_OWNER_WRITE_GC from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_WRITE_LC1 is   { send LC2_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_WRITE_LC2 is   { send LC2_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_READ_GC is     { send LC2_OWNER_READ_GC from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_READ_LC1 is    { send LC2_OWNER_READ_LC1 from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_READ_LC2 is    { send LC2_OWNER_READ_LC2 from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_WRITE_GC is      { send UNKNOWN_WRITE_GC from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_WRITE_LC1 is     { send UNKNOWN_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_WRITE_LC2 is     { send UNKNOWN_WRITE_LC2 from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_READ_GC is       { send UNKNOWN_READ_GC from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_READ_LC1 is      { send UNKNOWN_READ_LC1 from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_READ_LC2 is      { send UNKNOWN_READ_LC2 from {env}1 to {GC}1 }
 
-event evt_recv_ADMIN_ACK_GC is          { receive ADMIN_ACK_GC from {SAP}1 to {env}1 }
-event evt_recv_ADMIN_ACK_LC1 is         { receive ADMIN_ACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_ADMIN_ACK_LC2 is         { receive ADMIN_ACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_ADMIN_NACK_GC is         { receive ADMIN_NACK_GC from {SAP}1 to {env}1 }
-event evt_recv_ADMIN_NACK_LC1 is        { receive ADMIN_NACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_ADMIN_NACK_LC2 is        { receive ADMIN_NACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_GC_OWNER_ACK_GC is       { receive GC_OWNER_ACK_GC from {SAP}1 to {env}1 }
-event evt_recv_GC_OWNER_ACK_LC1 is      { receive GC_OWNER_ACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_GC_OWNER_ACK_LC2 is      { receive GC_OWNER_ACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_GC_OWNER_NACK_GC is      { receive GC_OWNER_NACK_GC from {SAP}1 to {env}1 }
-event evt_recv_GC_OWNER_NACK_LC1 is     { receive GC_OWNER_NACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_GC_OWNER_NACK_LC2 is     { receive GC_OWNER_NACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_LC1_OWNER_ACK_GC is      { receive LC1_OWNER_ACK_GC from {SAP}1 to {env}1 }
-event evt_recv_LC1_OWNER_ACK_LC1 is     { receive LC1_OWNER_ACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_LC1_OWNER_ACK_LC2 is     { receive LC1_OWNER_ACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_LC1_OWNER_NACK_GC is     { receive LC1_OWNER_NACK_GC from {SAP}1 to {env}1 }
-event evt_recv_LC1_OWNER_NACK_LC1 is    { receive LC1_OWNER_NACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_LC1_OWNER_NACK_LC2 is    { receive LC1_OWNER_NACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_LC2_OWNER_ACK_GC is      { receive LC2_OWNER_ACK_GC from {SAP}1 to {env}1 }
-event evt_recv_LC2_OWNER_ACK_LC1 is     { receive LC2_OWNER_ACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_LC2_OWNER_ACK_LC2 is     { receive LC2_OWNER_ACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_LC2_OWNER_NACK_GC is     { receive LC2_OWNER_NACK_GC from {SAP}1 to {env}1 }
-event evt_recv_LC2_OWNER_NACK_LC1 is    { receive LC2_OWNER_NACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_LC2_OWNER_NACK_LC2 is    { receive LC2_OWNER_NACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_UNKNOWN_ACK_GC is        { receive UNKNOWN_ACK_GC from {SAP}1 to {env}1 }
-event evt_recv_UNKNOWN_ACK_LC1 is       { receive UNKNOWN_ACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_UNKNOWN_ACK_LC2 is       { receive UNKNOWN_ACK_LC2 from {SAP}1 to {env}1 }
-event evt_recv_UNKNOWN_NACK_GC is       { receive UNKNOWN_NACK_GC from {SAP}1 to {env}1 }
-event evt_recv_UNKNOWN_NACK_LC1 is      { receive UNKNOWN_NACK_LC1 from {SAP}1 to {env}1 }
-event evt_recv_UNKNOWN_NACK_LC2 is      { receive UNKNOWN_NACK_LC2 from {SAP}1 to {env}1 }
+event evt_recv_ADMIN_ACK_GC_WRITE is    { receive ACK_WRITE_GC_FOR_ADMIN from {GC}1 to {env}1 }
+event evt_recv_ADMIN_ACK_GC_READ  is    { receive ACK_READ_GC_FOR_ADMIN from {GC}1 to {env}1 }
+
+event evt_recv_ADMIN_NACK_GC_WRITE is   { receive NACK_WRITE_GC_FOR_ADMIN from {GC}1 to {env}1 }
+event evt_recv_ADMIN_NACK_GC_READ  is   { receive NACK_READ_GC_FOR_ADMIN from {GC}1 to {env}1 }
+
 
 event evt_recv_ANY is                   { receive ANY from {GC}1 to {env}1 }
 event evt_send_END is                   { send REQ_END from {env}1 to {GC}1 }
@@ -80,7 +56,7 @@ event evt_recv_END is                   { receive REQ_END from {env}1 to {GC}1 }
 //           Activities Elementaires
 //--------------------------------------------------
 activity actElem_ADMIN_WRITE_GC is 
-{ event evt_send_ADMIN_WRITE_GC; { event evt_recv_ADMIN_ACK_GC [] event evt_recv_ADMIN_NACK_GC }
+{ event evt_send_ADMIN_WRITE_GC; { event evt_recv_ADMIN_ACK_GC_WRITE [] event evt_recv_ADMIN_NACK_GC_WRITE }
 } 
 
 //--------------------------------------------------
@@ -89,7 +65,7 @@ activity actElem_ADMIN_WRITE_GC is
 property pty_actElem_ADMIN_WRITE_GC_allowed is 
 { 
   start   -- / / evt_send_ADMIN_WRITE_GC  /  -> waitRet;
-  waitRet -- / / evt_recv_ADMIN_ACK_GC  / -> success;
+  waitRet -- / / evt_recv_ADMIN_ACK_GC_WRITE  / -> success;
   waitRet -- / / evt_recv_ANY  /  -> reject
 }
 

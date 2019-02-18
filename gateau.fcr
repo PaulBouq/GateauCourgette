@@ -5,7 +5,7 @@
 // --------------------------------------------------------
 
 const Nb_LC     : nat is 2
-const SIZE_FIFO : nat is 5
+const SIZE_FIFO : nat is 20
 
 type ID is union
   ADMIN
@@ -129,14 +129,14 @@ const ACK_WRITE_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, 
 const ACK_WRITE_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par LC2_OWNER acceptee
 const ACK_WRITE_GC_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par GC_OWNER acceptee
 const ACK_WRITE_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par UNKNOWN acceptee
-const ACK_WRITE_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par ADMIN acceptee
+const ACK_WRITE_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par ADMIN acceptee
 
 // Refus des demandes d'écriture sur GC
 const NACK_WRITE_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par LC1_OWNER refusee
 const NACK_WRITE_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par LC2_OWNER refusee
 const NACK_WRITE_GC_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par GC_OWNER refusee
 const NACK_WRITE_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par UNKNOWN refusee
-const NACK_WRITE_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par ADMIN refusee
+const NACK_WRITE_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par ADMIN refusee
 
 // Validation des demandes de lecture sur LC1
 const ACK_READ_LC1_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC1, oper = READ, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande de lecture sur LC1 par LC1_OWNER acceptee
@@ -384,19 +384,21 @@ states
     sign
 
 var
-    req : REQUEST
+    req : REQUEST,
+    allo : int
 
 init
+    req := REQ_NUL;
     to Idle
 
 from Idle
     if(empty Ext_sap and empty Int_sap and empty CP_sap) then   //All fifo are empty
-        loop
-    elsif(empty Ext_sap and empty Int_sap) then                 //CP fifo is not empty
-        to rec_from_cp
-    elsif(empty Ext_sap and empty CP_sap) then                  //interior fifo not empty
-        to rec_from_int
-    elsif(empty Int_sap and empty CP_sap) then                  //exterior fifo not empty
+        loop end;
+    if((empty CP_sap) = false) then                 //CP fifo is not empty
+        to rec_from_cp end;
+    if((empty Int_sap) = false) then                  //interior fifo not empty
+        to rec_from_int end;
+    if((empty Ext_sap) = false) then                                                      //exterior fifo not empty
         to rec_from_ext
     end;
     to Idle
@@ -404,7 +406,9 @@ from Idle
 from rec_from_cp
     req     := (first CP_sap);
     CP_sap  := (dequeue CP_sap);
-    if(req.isAck = ACK) then                                    //2 possibilities : either the CP acknolegded or not
+    if(req.target = stage_id) then
+        to send_to_ext
+    elsif(req.isAck = ACK) then                                    //2 possibilities : either the CP acknolegded or not
         to send_to_int
     else
         to send_to_ext
@@ -485,6 +489,7 @@ var req : REQUEST
 
 
 init
+    req := REQ_NUL;
     to idle
 
 from idle
@@ -568,7 +573,7 @@ process Checkpoint(&outputSAP  : read write t_fifo,
                         &outputAUTH : read write t_fifo,
                         &inputAUTH  : read write t_fifo) is
 states
-    idle, check, forward
+    idle, check, forwardAUTH, forwardSAP
 
 var
     req         : REQUEST,
@@ -579,40 +584,40 @@ init
     to idle
 
 from idle
-    // FAIRE DES SELECT
-    if(empty inputSAP) then
-        loop
-    else
+    if(empty inputSAP and empty inputAUTH) then
+        loop end;
+    if((empty inputSAP) = false) then
         req         := first inputSAP;
-        inputSAP    := dequeue(inputSAP)
+        inputSAP    := dequeue(inputSAP);
+        to check
     end;
-
-    if(empty inputAUTH) then
-        loop
-    else
+    if((empty inputAUTH) = false) then
         req         := first inputAUTH;
-        inputAUTH   := dequeue(inputAUTH)
+        inputAUTH   := dequeue(inputAUTH);
+        to check
     end;
-
-    to check
+    to idle
 
 from check
     SAPorAUTH := doCheck(req);
     if(SAPorAUTH = false) then
         req.isAck := NACK
     end;
-
-    to forward
-
-from forward
-    if(SAPorAUTH = false) then
-        if(full outputSAP) then loop end;
-        outputSAP := enqueue(outputSAP, req)
-
+    if(req.isAck = ACK or req.isAck = NACK) then
+        to forwardSAP
     else
-        if(full outputAUTH) then loop end;
-        outputAUTH := enqueue(outputAUTH, req)
+        to forwardAUTH
     end;
+    to idle
+
+from forwardSAP
+    if(full outputSAP) then loop end;
+    outputSAP := enqueue(outputSAP, req);
+    to idle
+
+from forwardAUTH
+    if(full outputAUTH) then loop end;
+    outputAUTH := enqueue(outputAUTH, req);
     to idle
 
 
@@ -636,6 +641,7 @@ var
     req : REQUEST
 
 init
+    req := REQ_NUL;
     to idle
 
 from idle
