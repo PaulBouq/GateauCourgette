@@ -706,7 +706,7 @@ from idle
     to dodo
 
 from dodo
-    if(req.id = plc_id and req.obj = plc_obj) then
+    if(req.target = plc_id and req.obj = plc_obj) then
         req.isAck := ACK
     else
         req.isAck := NACK
