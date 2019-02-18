@@ -51,17 +51,10 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 //              Déclaration des constantes
 // --------------------------------------------------------
 
-
-
-
 const SIG_NULL : SIGNATURE is {CC_SIG = NUL, COM_SIG = NUL, FU_SIG = NUL}  // Définition d'une signature vide
 const SIG_FULL : SIGNATURE is {CC_SIG = GC, COM_SIG = Network, FU_SIG = LC1} // Définition de la signature complète
 const REQ_NUL  : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide vers ID_NUL
 const REQ_END  : REQUEST is {source = ID_NUL, target = ID_END, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide vers ID_END
-
-
-
-
 
 // Requetes en lecture et écriture de LC1_OWNER
 const LC1_OWNER_WRITE_LC1 : REQUEST is {source = LC1_OWNER, target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requete d'écriture sur LC1 par LC1_OWNER
@@ -376,7 +369,7 @@ process SAP
      &Sap_int : read write t_fifo,
      &CP_sap  : read write t_fifo,
      &Sap_cp  : read write t_fifo,
-     &stage_id: ID)
+     stage_id: ID)
 
 is
 
@@ -683,7 +676,7 @@ from fwTo2
 //                        PLC
 // ######################################################
 
-process PLC(&plc_id : ID,
+process PLC(plc_id : ID,
             plc_obj : int,
             &outp   : read write t_fifo,
             &inp    : read write t_fifo)
@@ -792,24 +785,24 @@ init
 
 par
     // CCtr
-    SAP(GC_1, toContext, Com_CCtr, CCtr_Com, CheckpCCtr_CCtr, CCtr_CheckpCCtr, GC)
-    ||  Checkpoint(CheckpCCtr_CCtr, CCtr_CheckpCCtr, CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
-    ||  Firewall(CheckpCCtr_fireCCtr, fireCCtr_CheckpCCtr)
+    SAP(&GC_1, &toContext, &Com_CCtr, &CCtr_Com, &CheckpCCtr_CCtr, &CCtr_CheckpCCtr, GC)
+    ||  Checkpoint(&CheckpCCtr_CCtr, &CCtr_CheckpCCtr, &CheckpCCtr_fireCCtr, &fireCCtr_CheckpCCtr)
+    ||  Firewall(&CheckpCCtr_fireCCtr, &fireCCtr_CheckpCCtr)
         
     // Com
-    ||  SAP(CCtr_Com, Com_CCtr, FU_Com, Com_FU, CheckpCom_Com, Com_CheckpCom, Network)
-    ||  Checkpoint(CheckpCom_Com, Com_CheckpCom, CheckpCom_fireCom, fireCom_CheckpCom)
-    ||  Firewall(CheckpCom_fireCom, fireCom_CheckpCom)
+    ||  SAP(&CCtr_Com, &Com_CCtr, &FU_Com, &Com_FU, &CheckpCom_Com, &Com_CheckpCom, Network)
+    ||  Checkpoint(&CheckpCom_Com, &Com_CheckpCom, &CheckpCom_fireCom, &fireCom_CheckpCom)
+    ||  Firewall(&CheckpCom_fireCom, &fireCom_CheckpCom)
         
     // FU
-    ||  SAP(Com_FU, FU_Com, LC_FU, FU_LC, CheckpFU_FU, FU_CheckpFU, LC1)
-    ||  Checkpoint(CheckpFU_FU, FU_CheckpFU, CheckpFU_fireFU, fireFU_CheckpFU)
-    ||  Firewall(CheckpFU_fireFU, fireFU_CheckpFU)
+    ||  SAP(&Com_FU, &FU_Com, &LC_FU, &FU_LC, &CheckpFU_FU, &FU_CheckpFU, LC1)
+    ||  Checkpoint(&CheckpFU_FU, &FU_CheckpFU, &CheckpFU_fireFU, &fireFU_CheckpFU)
+    ||  Firewall(&CheckpFU_fireFU, &fireFU_CheckpFU)
     
-    ||  LC(FU_LC, LC_FU, LC_PLC1, PLC1_LC, LC_PLC2, PLC2_LC)
+    ||  LC(&FU_LC, &LC_FU, &LC_PLC1, &PLC1_LC, &LC_PLC2, &PLC2_LC)
     
-    ||  PLC(LC1, 2, PLC1_LC, LC_PLC1)
-    ||  PLC(LC2, 3, PLC2_LC, LC_PLC2)
+    ||  PLC(LC1, 2, &PLC1_LC, &LC_PLC1)
+    ||  PLC(LC2, 3, &PLC2_LC, &LC_PLC2)
 end
 
 SCADA
