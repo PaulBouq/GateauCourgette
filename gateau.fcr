@@ -56,7 +56,12 @@ type t_fifo is queue SIZE_FIFO of REQUEST
 
 const SIG_NULL : SIGNATURE is {CC_SIG = NUL, COM_SIG = NUL, FU_SIG = NUL}  // Définition d'une signature vide
 const SIG_FULL : SIGNATURE is {CC_SIG = GC, COM_SIG = Network, FU_SIG = LC1} // Définition de la signature complète
-const REQ_NUL : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide
+const REQ_NUL  : REQUEST is {source = ID_NUL, target = ID_NUL, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide vers ID_NUL
+const REQ_END  : REQUEST is {source = ID_NUL, target = ID_END, oper = OP_NUL, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requête vide vers ID_END
+
+
+
+
 
 // Requetes en lecture et écriture de LC1_OWNER
 const LC1_OWNER_WRITE_LC1 : REQUEST is {source = LC1_OWNER, target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = OP_NUL}  // Définition d'une requete d'écriture sur LC1 par LC1_OWNER
