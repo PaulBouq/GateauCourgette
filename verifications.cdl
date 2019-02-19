@@ -56,6 +56,7 @@ event evt_recv_ACK_WRITE_NETWORK_FROM_ADMIN is{receive ACK_WRITE_NETWORK_FROM_AD
 event evt_recv_LC1_OWNER_NACK_GC_READ is { receive NACK_READ_GC_FOR_LC1_OWNER from {GC}1 to {env}1 }
 event evt_recv_LC2_OWNER_NACK_GC_READ is { receive NACK_READ_GC_FOR_LC2_OWNER from {GC}1 to {env}1 }
 event evt_recv_UNKNOWN_NACK_GC_READ   is { receive NACK_READ_GC_FOR_UNKNOWN from {GC}1 to {env}1 }
+
 event evt_recv_UNKNOWN_NACK_LC1_READ  is { receive NACK_READ_LC1_FOR_UNKNOWN from {GC}1 to {env}1 }
 event evt_recv_UNKNOWN_NACK_LC2_READ  is { receive NACK_READ_LC2_FOR_UNKNOWN from {GC}1 to {env}1 }
 event evt_recv_GC_OWNER_NACK_LC1_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
@@ -107,6 +108,11 @@ activity UNKNOWN_READ_GC is
 	event evt_send_UNKNOWN_READ_GC; event evt_recv_UNKNOWN_NACK_GC_READ
 }
 
+activity UNKNOWN_READ_LC1 is
+{
+	event evt_send_UNKNOWN_READ_LC1; event evt_recv_UNKNOWN_NACK_LC1_READ
+}
+
 activity UNKNOWN_READ_LC2 is
 {
 	event evt_send_UNKNOWN_READ_LC2; event evt_recv_UNKNOWN_NACK_LC2_READ
@@ -121,6 +127,8 @@ activity GC_OWNER_READ_LC2 is
 {
 	event evt_send_GC_OWNER_READ_LC2; event evt_recv_GC_OWNER_NACK_LC2_READ
 }
+
+
 
 // Integrity
 // GC
@@ -254,6 +262,36 @@ property pty_actElem_UNKNOWN_READ_GC_refused is
     waitRet -- / / evt_recv_ANY / -> reject
 }
 
+
+property pty_actElem_UNKNOWN_READ_LC1_refused is
+{
+	start -- / / evt_send_UNKNOWN_READ_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_UNKNOWN_NACK_LC1_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+property pty_actElem_UNKNOWN_READ_LC2_refused is
+{
+	start -- / / evt_send_UNKNOWN_READ_LC2 / -> waitRet;
+    waitRet -- / / evt_recv_UNKNOWN_NACK_LC2_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+property pty_actElem_GC_OWNER_READ_LC1_refused is
+{
+	start -- / / evt_send_GC_OWNER_READ_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_GC_OWNER_NACK_LC1_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+property pty_actElem_GC_OWNER_READ_LC2_refused is
+{
+	start -- / / evt_send_GC_OWNER_READ_LC2 / -> waitRet;
+    waitRet -- / / evt_recv_GC_OWNER_NACK_LC2_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+
 property pty_actElem_ADMIN_READ_LC1_allowed is
 {
     start -- / / evt_send_ADMIN_READ_LC1 / -> waitRet;
@@ -340,6 +378,7 @@ property pty_actElem_LC2_OWNER_WRITE_LC1 is
     waitRet -- / / evt_recv_ANY  /                      -> reject
 }
 
+
 //--------------------------------------------------
 //              Contextes
 //--------------------------------------------------
@@ -376,6 +415,56 @@ cdl confidentiality_Context_LC2OWNER_read_GC is
         LC2_OWNER_READ_GC
     }
 }
+
+cdl confidentiality_Context_GCOWNER_read_LC1 is
+{
+	properties
+        pty_actElem_GC_OWNER_READ_LC1_refused
+
+	main is
+	{
+        GC_OWNER_READ_LC1
+    }	
+}
+
+cdl confidentiality_Context_GCOWNER_read_LC2 is
+{
+	properties
+        pty_actElem_GC_OWNER_READ_LC2_refused
+
+	main is
+	{
+        GC_OWNER_READ_LC2
+    }	
+}
+
+cdl confidentiality_Context_UNKNOWN_read_LC1 is
+{
+	properties
+        pty_actElem_UNKNOWN_READ_LC1_refused
+
+	main is
+	{
+        UNKNOWN_READ_LC1
+    }	
+}
+
+cdl confidentiality_Context_UNKNOWN_read_LC2 is
+{
+	properties
+        pty_actElem_UNKNOWN_READ_LC2_refused
+
+	main is
+	{
+        UNKNOWN_READ_LC2
+    }	
+}
+
+
+
+
+
+
 
 
 cdl availability_Context_ADMIN_read_GC is
