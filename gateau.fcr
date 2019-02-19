@@ -390,8 +390,7 @@ states
     sign
 
 var
-    req : REQUEST,
-    allo : int
+    req : REQUEST
 
 init
     req := REQ_NUL;
