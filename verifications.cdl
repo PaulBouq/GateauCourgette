@@ -61,6 +61,9 @@ event evt_recv_UNKNOWN_NACK_LC2_READ  is { receive NACK_READ_LC2_FOR_UNKNOWN fro
 event evt_recv_GC_OWNER_NACK_LC1_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
 event evt_recv_GC_OWNER_NACK_LC2_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
 
+event evt_recv_ADMIN_ACK_LC1_READ is {receive ACK_READ_LC1_FOR_ADMIN from {GC}1 to {env}1 }
+event evt_recv_ADMIN_ACK_LC2_READ is {receive ACK_READ_LC2_FOR_ADMIN from {GC}1 to {env}1 }
+
 
 
 
@@ -113,6 +116,16 @@ activity GC_OWNER_READ_GC is
     event evt_send_GC_OWNER_READ_GC; event evt_recv_GC_OWNER_ACK_GC_READ
 }
 
+activity ADMIN_READ_LC1 is
+{
+    event evt_send_ADMIN_READ_LC1; event evt_recv_ADMIN_ACK_LC1_READ
+}
+
+activity ADMIN_READ_LC2 is
+{
+    event evt_send_ADMIN_READ_LC2; event evt_recv_ADMIN_ACK_LC2_READ
+}
+
 //--------------------------------------------------
 //           Observateurs Elementaires
 //--------------------------------------------------
@@ -155,6 +168,20 @@ property pty_actElem_UNKNOWN_READ_GC_refused is
 {
     start -- / / evt_send_UNKNOWN_READ_GC / -> waitRet;
     waitRet -- / / evt_recv_UNKNOWN_NACK_GC_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+property pty_actElem_ADMIN_READ_LC1_allowed is
+{
+    start -- / / evt_send_ADMIN_READ_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_ADMIN_ACK_LC1_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+property pty_actElem_ADMIN_READ_LC2_allowed is
+{
+    start -- / / evt_send_ADMIN_READ_LC2 / -> waitRet;
+    waitRet -- / / evt_recv_ADMIN_ACK_LC2_READ / -> start;
     waitRet -- / / evt_recv_ANY / -> reject
 }
 
@@ -215,5 +242,27 @@ cdl availability_Context_GCOWNER_read_GC is
     main is
     {
         GC_OWNER_READ_GC
+    }
+}
+
+cdl availability_Context_ADMIN_READ_LC1 is
+{
+    properties
+        pty_actElem_ADMIN_READ_LC1_allowed
+
+    main is
+    {
+        ADMIN_READ_LC1
+    }
+}
+
+cdl availability_Context_ADMIN_READ_LC2 is
+{
+    properties
+        pty_actElem_ADMIN_READ_LC2_allowed
+
+    main is
+    {
+        ADMIN_READ_LC2
     }
 }
