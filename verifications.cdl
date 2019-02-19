@@ -217,6 +217,14 @@ activity ADMIN_READ_LC2 is
     event evt_send_ADMIN_READ_LC2; event evt_recv_ADMIN_ACK_LC2_READ
 }
 
+activity full_availability is
+{
+        ADMIN_READ_GC
+    []  GC_OWNER_READ_GC
+    []  ADMIN_READ_LC1
+    []  ADMIN_READ_LC2
+}
+
 //--------------------------------------------------
 //           Observateurs Elementaires
 //--------------------------------------------------
@@ -366,7 +374,7 @@ property pty_actElem_GC_OWNER_WRITE_LC2 is
 // For LC_OWNERs
 property pty_actElem_LC1_OWNER_WRITE_LC2 is
 {
-    start -- / / evt_send_LC1_OWNER_WRITE_LC1 / -> waitRet;
+    start -- / / evt_send_LC1_OWNER_WRITE_LC2 / -> waitRet;
     waitRet -- / / evt_recv_LC1_OWNER_NACK_LC2_WRITE  / -> start;
     waitRet -- / / evt_recv_ANY  /                      -> reject
 }
@@ -463,51 +471,17 @@ cdl confidentiality_Context_UNKNOWN_read_LC2 is
 
 
 
-
-
-
-
-cdl availability_Context_ADMIN_read_GC is
+cdl availability_Full_Context is
 {
     properties
-        pty_actElem_ADMIN_READ_GC_allowed
-
-    main is
-    {
-        ADMIN_READ_GC
-    }
-}
-
-cdl availability_Context_GCOWNER_read_GC is
-{
-    properties
-        pty_actElem_GC_OWNER_READ_GC_allowed        
-
-    main is
-    {
-        GC_OWNER_READ_GC
-    }
-}
-
-cdl availability_Context_ADMIN_READ_LC1 is
-{
-    properties
-        pty_actElem_ADMIN_READ_LC1_allowed
-
-    main is
-    {
-        ADMIN_READ_LC1
-    }
-}
-
-cdl availability_Context_ADMIN_READ_LC2 is
-{
-    properties
+        pty_actElem_ADMIN_READ_GC_allowed,
+        pty_actElem_GC_OWNER_READ_GC_allowed,
+        pty_actElem_ADMIN_READ_LC1_allowed,
         pty_actElem_ADMIN_READ_LC2_allowed
 
     main is
     {
-        ADMIN_READ_LC2
+        full_availability
     }
 }
 

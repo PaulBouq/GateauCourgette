@@ -107,11 +107,11 @@ const ACK_WRITE_LC1_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC1
 const ACK_WRITE_LC1_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur LC1 par ADMIN acceptee
 
 // Refus des demandes d'écriture sur LC1
-const NACK_WRITE_LC1_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par LC1_OWNER refusee
+const NACK_WRITE_LC1_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par LC1_OWNER refusee
 const NACK_WRITE_LC1_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par LC2_OWNER refusee
-const NACK_WRITE_LC1_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par GC_OWNER refusee
-const NACK_WRITE_LC1_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par UNKNOWN refusee
-const NACK_WRITE_LC1_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par ADMIN refusee
+const NACK_WRITE_LC1_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par GC_OWNER refusee
+const NACK_WRITE_LC1_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par UNKNOWN refusee
+const NACK_WRITE_LC1_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par ADMIN refusee
 
 // Validation des demandes d'écriture sur LC2
 const ACK_WRITE_LC2_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur LC2 par LC1_OWNER acceptee
@@ -121,11 +121,11 @@ const ACK_WRITE_LC2_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC2
 const ACK_WRITE_LC2_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur LC2 par ADMIN acceptee
 
 // Refus des demandes d'écriture sur LC2
-const NACK_WRITE_LC2_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par LC1_OWNER refusee
-const NACK_WRITE_LC2_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par LC2_OWNER refusee
-const NACK_WRITE_LC2_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par GC_OWNER refusee
-const NACK_WRITE_LC2_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par UNKNOWN refusee
-const NACK_WRITE_LC2_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC2, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par ADMIN refusee
+const NACK_WRITE_LC2_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC2, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par LC1_OWNER refusee
+const NACK_WRITE_LC2_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = LC2, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par LC2_OWNER refusee
+const NACK_WRITE_LC2_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = LC2, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par GC_OWNER refusee
+const NACK_WRITE_LC2_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC2, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par UNKNOWN refusee
+const NACK_WRITE_LC2_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC2, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC2 par ADMIN refusee
 
 // Validation des demandes d'écriture sur GC
 const ACK_WRITE_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par LC1_OWNER acceptee
@@ -135,10 +135,10 @@ const ACK_WRITE_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, 
 const ACK_WRITE_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = ACK}  // Demande d'écriture sur GC par ADMIN acceptee
 
 // Refus des demandes d'écriture sur GC
-const NACK_WRITE_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par LC1_OWNER refusee
-const NACK_WRITE_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par LC2_OWNER refusee
-const NACK_WRITE_GC_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par GC_OWNER refusee
-const NACK_WRITE_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par UNKNOWN refusee
+const NACK_WRITE_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par LC1_OWNER refusee
+const NACK_WRITE_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par LC2_OWNER refusee
+const NACK_WRITE_GC_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par GC_OWNER refusee
+const NACK_WRITE_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par UNKNOWN refusee
 const NACK_WRITE_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur GC par ADMIN refusee
 
 // Validation des demandes de lecture sur LC1
