@@ -60,7 +60,7 @@ event evt_recv_UNKNOWN_NACK_GC_READ   is { receive NACK_READ_GC_FOR_UNKNOWN from
 event evt_recv_UNKNOWN_NACK_LC1_READ  is { receive NACK_READ_LC1_FOR_UNKNOWN from {GC}1 to {env}1 }
 event evt_recv_UNKNOWN_NACK_LC2_READ  is { receive NACK_READ_LC2_FOR_UNKNOWN from {GC}1 to {env}1 }
 event evt_recv_GC_OWNER_NACK_LC1_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
-event evt_recv_GC_OWNER_NACK_LC2_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
+event evt_recv_GC_OWNER_NACK_LC2_READ is { receive NACK_READ_LC2_FOR_GC_OWNER from {GC}1 to {env}1 }
 
 event evt_recv_ADMIN_ACK_LC1_READ is {receive ACK_READ_LC1_FOR_ADMIN from {GC}1 to {env}1 }
 event evt_recv_ADMIN_ACK_LC2_READ is {receive ACK_READ_LC2_FOR_ADMIN from {GC}1 to {env}1 }
@@ -93,37 +93,37 @@ event evt_recv_GC_OWNER_NACK_WRITE_LC2 is  {receive NACK_WRITE_LC2_FOR_GC_OWNER 
 //           Activities Elementaires
 //--------------------------------------------------
 
-activity LC1_OWNER_READ_GC is
+activity actElem_LC1_OWNER_READ_GC is
 {
 	event evt_send_LC1_OWNER_READ_GC; event evt_recv_LC1_OWNER_NACK_GC_READ
 }
 
-activity LC2_OWNER_READ_GC is
+activity actElem_LC2_OWNER_READ_GC is
 {
 	event evt_send_LC2_OWNER_READ_GC; event evt_recv_LC2_OWNER_NACK_GC_READ
 }
 
-activity UNKNOWN_READ_GC is
+activity actElem_UNKNOWN_READ_GC is
 {
 	event evt_send_UNKNOWN_READ_GC; event evt_recv_UNKNOWN_NACK_GC_READ
 }
 
-activity UNKNOWN_READ_LC1 is
+activity actElem_UNKNOWN_READ_LC1 is
 {
 	event evt_send_UNKNOWN_READ_LC1; event evt_recv_UNKNOWN_NACK_LC1_READ
 }
 
-activity UNKNOWN_READ_LC2 is
+activity actElem_UNKNOWN_READ_LC2 is
 {
 	event evt_send_UNKNOWN_READ_LC2; event evt_recv_UNKNOWN_NACK_LC2_READ
 }
 
-activity GC_OWNER_READ_LC1 is
+activity actElem_GC_OWNER_READ_LC1 is
 {
 	event evt_send_GC_OWNER_READ_LC1; event evt_recv_GC_OWNER_NACK_LC1_READ
 }
 
-activity GC_OWNER_READ_LC2 is
+activity actElem_GC_OWNER_READ_LC2 is
 {
 	event evt_send_GC_OWNER_READ_LC2; event evt_recv_GC_OWNER_NACK_LC2_READ
 }
@@ -195,6 +195,22 @@ activity full_integrity_2 is
     []  actElem_GC_OWNER_WRITE_LC2
     []  actElem_LC1_OWNER_WRITE_LC2
     []  actElem_LC2_OWNER_WRITE_LC1
+}
+
+
+activity full_confidentiality is
+{
+	actElem_LC1_OWNER_READ_GC
+	[] actElem_LC2_OWNER_READ_GC
+	[] actElem_UNKNOWN_READ_GC
+}
+
+activity full_confidentiality_2 is
+{
+	actElem_UNKNOWN_READ_LC1
+	[] actElem_UNKNOWN_READ_LC2
+	[] actElem_GC_OWNER_READ_LC1
+	[] actElem_GC_OWNER_READ_LC2
 }
 
 activity ADMIN_READ_GC is
@@ -391,81 +407,31 @@ property pty_actElem_LC2_OWNER_WRITE_LC1 is
 //              Contextes
 //--------------------------------------------------
 
-cdl confidentiality_Context_UNKNOWN_read_GC is
+cdl confidentiality_Refused_read_GC is
 {
 	properties
-        pty_actElem_UNKNOWN_READ_GC_refused
-
-	main is
-	{
-        UNKNOWN_READ_GC
-    }
-}
-
-cdl confidentiality_Context_LC1OWNER_read_GC is
-{
-	properties
-        pty_actElem_LC1OWNER_READ_GC_refused
-
-	main is
-	{
-        LC1_OWNER_READ_GC
-    }
-}
-
-cdl confidentiality_Context_LC2OWNER_read_GC is
-{
-	properties
+        pty_actElem_UNKNOWN_READ_GC_refused,
+        pty_actElem_LC1OWNER_READ_GC_refused,
         pty_actElem_LC2OWNER_READ_GC_refused
 
 	main is
 	{
-        LC2_OWNER_READ_GC
+        full_confidentiality
     }
 }
 
-cdl confidentiality_Context_GCOWNER_read_LC1 is
+cdl confidentiality_Refused_read_LC is
 {
 	properties
-        pty_actElem_GC_OWNER_READ_LC1_refused
-
-	main is
-	{
-        GC_OWNER_READ_LC1
-    }	
-}
-
-cdl confidentiality_Context_GCOWNER_read_LC2 is
-{
-	properties
-        pty_actElem_GC_OWNER_READ_LC2_refused
-
-	main is
-	{
-        GC_OWNER_READ_LC2
-    }	
-}
-
-cdl confidentiality_Context_UNKNOWN_read_LC1 is
-{
-	properties
-        pty_actElem_UNKNOWN_READ_LC1_refused
-
-	main is
-	{
-        UNKNOWN_READ_LC1
-    }	
-}
-
-cdl confidentiality_Context_UNKNOWN_read_LC2 is
-{
-	properties
+        pty_actElem_GC_OWNER_READ_LC1_refused,
+        pty_actElem_GC_OWNER_READ_LC2_refused,
+        pty_actElem_UNKNOWN_READ_LC1_refused,
         pty_actElem_UNKNOWN_READ_LC2_refused
 
 	main is
 	{
-        UNKNOWN_READ_LC2
-    }	
+        full_confidentiality_2
+    }
 }
 
 
