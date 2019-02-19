@@ -108,7 +108,7 @@ const ACK_WRITE_LC1_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC1
 
 // Refus des demandes d'écriture sur LC1
 const NACK_WRITE_LC1_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par LC1_OWNER refusee
-const NACK_WRITE_LC1_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par LC2_OWNER refusee
+const NACK_WRITE_LC1_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = LC1, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par LC2_OWNER refusee
 const NACK_WRITE_LC1_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par GC_OWNER refusee
 const NACK_WRITE_LC1_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par UNKNOWN refusee
 const NACK_WRITE_LC1_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = LC1, oper = WRITE, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande d'écriture sur LC1 par ADMIN refusee
@@ -447,12 +447,17 @@ from rec_from_int
     req     := (first Int_sap);
     Int_sap := (dequeue Int_sap);
     if(stage_id = GC) then
-        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> FU) then
+        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> FU or req.signature.CC_SIG <> GC) then
             req.isAck := NACK
         end;
         to send_to_ext
     elsif(stage_id = Network) then
-        if(req.signature.FU_SIG <> FU) then
+        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> FU or req.signature.CC_SIG <> GC) then
+            req.isAck := NACK
+        end;
+        to send_to_ext
+    elsif(stage_id = FU) then
+        if(req.signature.COM_SIG <> Network or req.signature.FU_SIG <> FU or req.signature.CC_SIG <> GC) then
             req.isAck := NACK
         end;
         to send_to_ext
@@ -815,8 +820,8 @@ par
     
     ||  LC(&FU_LC, &LC_FU, &LC_PLC1, &PLC1_LC, &LC_PLC2, &PLC2_LC)
     
-    ||  PLC(LC1, 2, &PLC1_LC, &LC_PLC1)
-    ||  PLC(LC2, 3, &PLC2_LC, &LC_PLC2)
+    ||  PLC(LC1, 0, &PLC1_LC, &LC_PLC1)
+    ||  PLC(LC2, 0, &PLC2_LC, &LC_PLC2)
 end
 
 SCADA
