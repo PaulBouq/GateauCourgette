@@ -177,11 +177,11 @@ const ACK_READ_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, o
 const ACK_READ_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = READ, signature = SIG_NULL, obj = 0, isAck = ACK}  // Demande de lecture sur GC par ADMIN acceptee
 
 // Refus des demandes de lecture sur GC
-const NACK_READ_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par LC1_OWNER refusee
-const NACK_READ_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par LC2_OWNER refusee
+const NACK_READ_GC_FOR_LC1_OWNER : REQUEST is {source = LC1_OWNER, target = GC, oper = READ, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par LC1_OWNER refusee
+const NACK_READ_GC_FOR_LC2_OWNER : REQUEST is {source = LC2_OWNER, target = GC, oper = READ, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par LC2_OWNER refusee
 const NACK_READ_GC_FOR_GC_OWNER  : REQUEST is {source = GC_OWNER,  target = GC, oper = READ, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par GC_OWNER refusee
-const NACK_READ_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par UNKNOWN refusee
-const NACK_READ_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = READ, signature = SIG_FULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par ADMIN refusee
+const NACK_READ_GC_FOR_UNKNOWN   : REQUEST is {source = UNKNOWN,   target = GC, oper = READ, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par UNKNOWN refusee
+const NACK_READ_GC_FOR_ADMIN     : REQUEST is {source = ADMIN,     target = GC, oper = READ, signature = SIG_NULL, obj = 0, isAck = NACK}  // Demande de lecture sur GC par ADMIN refusee
 
 const ADMIN_WRITE_NETWORK        : REQUEST is {source = ADMIN, target = Network, oper = WRITE, signature = SIG_NULL, obj = 0, isAck = OP_NUL}
 const ACK_WRITE_NETWORK_FROM_ADMIN : REQUEST is {source = ADMIN, target = Network, oper = WRITE, signature = SIG_1, obj = 0, isAck = ACK}
