@@ -47,6 +47,8 @@ event evt_recv_ADMIN_ACK_GC_READ  is    { receive ACK_READ_GC_FOR_ADMIN from {GC
 event evt_recv_ADMIN_NACK_GC_WRITE is   { receive NACK_WRITE_GC_FOR_ADMIN from {GC}1 to {env}1 }
 event evt_recv_ADMIN_NACK_GC_READ  is   { receive NACK_READ_GC_FOR_ADMIN from {GC}1 to {env}1 }
 
+event evt_recv_GC_OWNER_ACK_GC_READ is  { receive ACK_READ_GC_FOR_GC_OWNER from {GC}1 to {env}1 }
+
 event evt_recv_LC1_OWNER_ACK_LC1_WRITE is {receive ACK_WRITE_LC1_FOR_LC1_OWNER from {GC}1 to {env}1 }
 event evt_recv_LC1_OWNER_NACK_LC1_WRITE is {receive NACK_WRITE_LC1_FOR_LC1_OWNER from {GC}1 to {env}1 }
 event evt_recv_LC2_OWNER_NACK_LC1_WRITE is {receive NACK_WRITE_LC1_FOR_LC2_OWNER from {GC}1 to {env}1 }
@@ -77,6 +79,16 @@ activity test is
 }
 
 
+activity ADMIN_READ_GC is
+{
+    event evt_send_ADMIN_READ_GC; event evt_recv_ADMIN_ACK_GC_READ
+}
+
+activity GC_OWNER_READ_GC is
+{
+    event evt_send_GC_OWNER_READ_GC; event evt_recv_GC_OWNER_ACK_GC_READ
+}
+
 //--------------------------------------------------
 //           Observateurs Elementaires
 //--------------------------------------------------
@@ -105,6 +117,20 @@ property pty_test is
 {
     start -- / / evt_send_ADMIN_WRITE_NETWORK / -> waitRet;
     waitRet -- / /  evt_recv_ACK_WRITE_NETWORK_FROM_ADMIN / -> success;
+    waitRet -- / / evt_recv_ANY  /  -> reject
+}
+
+property pty_actElem_GC_OWNER_READ_GC_allowed is
+{
+    start -- / / evt_send_GC_OWNER_READ_GC / -> waitRet;
+    waitRet -- / / evt_recv_GC_OWNER_ACK_GC_READ / -> success;
+    waitRet -- / / evt_recv_ANY  /  -> reject
+}
+
+property pty_actElem_ADMIN_READ_GC_allowed is
+{
+    start -- / / evt_send_ADMIN_READ_GC / -> waitRet;
+    waitRet -- / / evt_recv_ADMIN_ACK_GC_READ / -> success;
     waitRet -- / / evt_recv_ANY  /  -> reject
 }
 
@@ -141,5 +167,27 @@ cdl cdl_my_Context_LC2_Test is
     main is
     {
         test
+    }
+}
+
+cdl availability_Context_ADMIN_read_GC is
+{
+    properties
+        pty_actElem_ADMIN_READ_GC_allowed
+
+    main is
+    {
+        ADMIN_READ_GC
+    }
+}
+
+cdl availability_Context_GCOWNER_read_GC is
+{
+    properties
+        pty_actElem_GC_OWNER_READ_GC_allowed        
+
+    main is
+    {
+        GC_OWNER_READ_GC
     }
 }
