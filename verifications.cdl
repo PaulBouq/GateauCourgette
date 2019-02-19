@@ -18,19 +18,19 @@ event evt_send_GC_OWNER_WRITE_LC2 is    { send GC_OWNER_WRITE_LC2 from {env}1 to
 event evt_send_GC_OWNER_READ_GC is      { send GC_OWNER_READ_GC from {env}1 to {GC}1 }
 event evt_send_GC_OWNER_READ_LC1 is     { send GC_OWNER_READ_LC1 from {env}1 to {GC}1 }
 event evt_send_GC_OWNER_READ_LC2 is     { send GC_OWNER_READ_LC2 from {env}1 to {GC}1 }
-event evt_send_LC1_OWNER_WRITE_GC is    { send LC1_OWNER_WRITE_GC from {env}1 to {GC}1 }
+//event evt_send_LC1_OWNER_WRITE_GC is    { send LC1_OWNER_WRITE_GC from {env}1 to {GC}1 }
 event evt_send_LC1_OWNER_WRITE_LC1 is   { send LC1_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
 event evt_send_LC1_OWNER_WRITE_LC2 is   { send LC1_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
 event evt_send_LC1_OWNER_READ_GC is     { send LC1_OWNER_READ_GC from {env}1 to {GC}1 }
 event evt_send_LC1_OWNER_READ_LC1 is    { send LC1_OWNER_READ_LC1 from {env}1 to {GC}1 }
 event evt_send_LC1_OWNER_READ_LC2 is    { send LC1_OWNER_READ_LC2 from {env}1 to {GC}1 }
-event evt_send_LC2_OWNER_WRITE_GC is    { send LC2_OWNER_WRITE_GC from {env}1 to {GC}1 }
+//event evt_send_LC2_OWNER_WRITE_GC is    { send LC2_OWNER_WRITE_GC from {env}1 to {GC}1 }
 event evt_send_LC2_OWNER_WRITE_LC1 is   { send LC2_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
 event evt_send_LC2_OWNER_WRITE_LC2 is   { send LC2_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
 event evt_send_LC2_OWNER_READ_GC is     { send LC2_OWNER_READ_GC from {env}1 to {GC}1 }
 event evt_send_LC2_OWNER_READ_LC1 is    { send LC2_OWNER_READ_LC1 from {env}1 to {GC}1 }
 event evt_send_LC2_OWNER_READ_LC2 is    { send LC2_OWNER_READ_LC2 from {env}1 to {GC}1 }
-event evt_send_UNKNOWN_WRITE_GC is      { send UNKNOWN_WRITE_GC from {env}1 to {GC}1 }
+//event evt_send_UNKNOWN_WRITE_GC is      { send UNKNOWN_WRITE_GC from {env}1 to {GC}1 }
 event evt_send_UNKNOWN_WRITE_LC1 is     { send UNKNOWN_WRITE_LC1 from {env}1 to {GC}1 }
 event evt_send_UNKNOWN_WRITE_LC2 is     { send UNKNOWN_WRITE_LC2 from {env}1 to {GC}1 }
 event evt_send_UNKNOWN_READ_GC is       { send UNKNOWN_READ_GC from {env}1 to {GC}1 }
@@ -71,6 +71,35 @@ event evt_recv_ANY is                   { receive ANY from {GC}1 to {env}1 }
 event evt_send_END is                   { send REQ_END from {env}1 to {GC}1 }
 event evt_recv_END is                   { receive REQ_END from {env}1 to {GC}1 }
 
+// Integrity
+event evt_send_UNKNOWN_WRITE_GC     is { send UNKNOWN_WRITE_GC      from {env}1 to {GC}1 }
+event evt_send_LC1_OWNER_WRITE_GC   is { send LC1_OWNER_WRITE_GC    from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_WRITE_GC   is { send LC2_OWNER_WRITE_GC    from {env}1 to {GC}1 }
+
+event evt_recv_UNKNOWN_NACK_GC_WRITE    is { receive NACK_WRITE_GC_FOR_UNKNOW       from {GC}1 to {env}1 }
+event evt_recv_LC1_OWNER_NACK_GC_WRITE  is { receive NACK_WRITE_GC_FOR_LC1_OWNER    from {GC}1 to {env}1 }
+event evt_recv_LC2_OWNER_NACK_GC_WRITE  is { receive NACK_WRITE_GC_FOR_LC2_OWNER    from {GC}1 to {env}1 }
+
+
+event evt_send_UNKNOWN_WRITE_LC1 is { send UNKNOWN_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_UNKNOWN_WRITE_LC2 is { send UNKNOWN_WRITE_LC2 from {env}1 to {GC}1 }
+
+event evt_send_GC_OWNER_WRITE_LC1 is { send GC_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
+event evt_send_GC_OWNER_WRITE_LC2 is { send GC_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
+
+event evt_send_LC1_OWNER_WRITE_LC2 is { send LC1_OWNER_WRITE_LC2 from {env}1 to {GC}1 }
+event evt_send_LC2_OWNER_WRITE_LC1 is { send LC2_OWNER_WRITE_LC1 from {env}1 to {GC}1 }
+
+
+event evt_recv_UNKNWON_NACK_LC1_WRITE is { receive NACK_WRITE_LC1_FOR_UNKNOWN from {GC}1 to {env}1 }
+event evt_recv_UNKNWON_NACK_LC2_WRITE is { receive NACK_WRITE_LC2_FOR_UNKNOWN from {GC}1 to {env}1 }
+
+event evt_recv_GC_OWNER_NACK_LC1_WRITE is { receive NACK_WRITE_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
+event evt_recv_GC_OWNER_NACK_LC2_WRITE is { receive NACK_WRITE_LC2_FOR_GC_OWNER from {GC}1 to {env}1 }
+
+event evt_recv_LC1_OWNER_NACK_LC2_WRITE is { receive NACK_WRITE_LC2_FOR_LC1_OWNER from {GC}1 to {env}1 }
+event evt_recv_LC2_OWNER_NACK_LC1_WRITE is { receive NACK_WRITE_LC1_FOR_LC2_OWNER from {GC}1 to {env}1 }
+
 //--------------------------------------------------
 //           Activities Elementaires
 //--------------------------------------------------
@@ -105,6 +134,72 @@ activity GC_OWNER_READ_LC2 is
 	event evt_send_GC_OWNER_READ_LC2; event evt_recv_GC_OWNER_NACK_LC2_READ
 }
 
+// Integrity
+// GC
+activity actElem_UNKNWON_WRITE_GC is
+{
+    event evt_send_UNKNOWN_WRITE_GC; event evt_recv_UNKNOWN_NACK_GC_WRITE
+}
+
+activity actElem_LC1_OWNER_WRITE_GC is
+{
+    event evt_send_LC1_OWNER_WRITE_GC; event evt_recv_LC1_OWNER_NACK_GC_WRITE
+}
+
+activity actElem_LC2_OWNER_WRITE_GC is
+{
+    event evt_send_LC2_OWNER_WRITE_GC; event evt_recv_LC2_OWNER_NACK_GC_WRITE
+}
+
+
+// LC1 & LC2
+activity actElem_UNKNOWN_WRITE_LC1 is
+{
+    event evt_send_UNKNOWN_WRITE_LC1; event evt_recv_UNKNOWN_NACK_WRITE_LC1
+}
+
+activity actElem_UNKNOWN_WRITE_LC2 is
+{
+    event evt_send_UNKNOWN_WRITE_LC2; event evt_recv_UNKNOWN_NACK_WRITE_LC2
+}
+
+activity actElem_GC_OWNER_WRITE_LC1 is
+{
+    event evt_send_GC_OWNER_WRITE_LC1; event evt_recv_GC_OWNER_NACK_WRITE_LC1
+}
+
+activity actElem_GC_OWNER_WRITE_LC2 is
+{
+    event evt_send_GC_OWNER_WRITE_LC2; event evt_recv_GC_OWNER_NACK_WRITE_LC2
+}
+
+activity actElem_LC1_OWNER_WRITE_LC2 is
+{
+    event evt_send_LC1_OWNER_WRITE_LC2; event evt_recv_LC1_OWNER_NACK_LC2_WRITE
+}
+
+activity actElem_LC2_OWNER_WRITE_LC1 is
+{
+    event evt_send_LC2_OWNER_WRITE_LC1; event evt_recv_LC2_OWNER_NACK_LC1_WRITE
+}
+
+
+activity full_integrity_1 is
+{
+        actElem_UNKNWON_WRITE_GC
+    []  actElem_LC1_OWNER_WRITE_GC
+    []  actElem_LC2_OWNER_WRITE_GC
+}
+
+activity full_integrity_2 is
+{
+        actElem_UNKNOWN_WRITE_LC1
+    []  actElem_UNKNOWN_WRITE_LC2
+    []  actElem_GC_OWNER_WRITE_LC1
+    []  actElem_GC_OWNER_WRITE_LC2
+    []  actElem_LC1_OWNER_WRITE_LC2
+    []  actElem_LC2_OWNER_WRITE_LC1
+}
 
 activity ADMIN_READ_GC is
 {
@@ -183,6 +278,77 @@ property pty_actElem_ADMIN_READ_LC2_allowed is
     start -- / / evt_send_ADMIN_READ_LC2 / -> waitRet;
     waitRet -- / / evt_recv_ADMIN_ACK_LC2_READ / -> start;
     waitRet -- / / evt_recv_ANY / -> reject
+// Integrity
+// On GC
+
+// For UNKNOWN
+property pty_actElem_UNKNWON_WRITE_GC is 
+{
+    start   -- / / evt_send_UNKNOWN_WRITE_GC /      -> waitRet;
+    waitRet -- / / evt_recv_UNKNOWN_NACK_GC_WRITE / -> success;
+    waitRet -- / / evt_recv_ANY  /                  -> reject
+}
+
+// For LC_OWNERs
+property pty_actElem_LC1_OWNER_WRITE_GC is
+{
+    start   -- / / evt_send_LC1_OWNER_WRITE_GC /        -> waitRet;
+    waitRet -- / / evt_recv_LC1_OWNER_NACK_GC_WRITE /   -> success;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+property pty_actElem_LC2_OWNER_WRITE_GC is
+{
+    start   -- / / evt_send_LC2_OWNER_WRITE_GC /        -> waitRet;
+    waitRet -- / / evt_recv_LC2_OWNER_NACK_GC_WRITE /   -> success;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+// On LC1 & LC2
+
+// For UNKNOWN
+property pty_actElem_UNKNOWN_WRITE_LC1 is
+{
+    start -- / / evt_send_UNKNOWN_WRITE_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_UNKNWON_NACK_LC1_WRITE  / -> succes;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+property pty_actElem_UNKNOWN_WRITE_LC2 is
+{
+    start -- / / evt_send_UNKNOWN_WRITE_LC2 / -> waitRet;
+    waitRet -- / / evt_recv_UNKNWON_NACK_LC2_WRITE  / -> succes;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+// For GC_OWNER
+property pty_actElem_GC_OWNER_WRITE_LC1 is
+{
+    start -- / / evt_send_GC_OWNER_WRITE_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_GC_OWNER_NACK_LC1_WRITE  / -> succes;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+property pty_actElem_GC_OWNER_WRITE_LC2 is
+{
+    start -- / / evt_send_GC_OWNER_WRITE_LC2 / -> waitRet;
+    waitRet -- / / evt_recv_GC_OWNER_NACK_LC2_WRITE  / -> succes;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+// For LC_OWNERs
+property pty_actElem_LC1_OWNER_WRITE_LC2 is
+{
+    start -- / / evt_send_LC1_OWNER_WRITE_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_LC1_OWNER_NACK_LC2_WRITE  / -> succes;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
+}
+
+property pty_actElem_LC2_OWNER_WRITE_LC1 is
+{
+    start -- / / evt_send_LC2_OWNER_WRITE_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_LC2_OWNER_NACK_LC1_WRITE  / -> succes;
+    waitRet -- / / evt_recv_ANY  /                      -> reject
 }
 
 //--------------------------------------------------
@@ -264,5 +430,32 @@ cdl availability_Context_ADMIN_READ_LC2 is
     main is
     {
         ADMIN_READ_LC2
+    }
+}
+
+cdl cdl_integrity_context_1 is {
+    properties
+        pty_actElem_UNKNWON_WRITE_GC,
+        pty_actElem_LC1_OWNER_WRITE_GC,
+        pty_actElem_LC2_OWNER_WRITE_GC
+
+    main is
+    {
+        full_integrity_1
+    }
+}
+
+cdl cdl_integrity_context_2 is {
+    properties
+        pty_actElem_LC2_OWNER_WRITE_LC1,
+        pty_actElem_LC1_OWNER_WRITE_LC2,
+        pty_actElem_GC_OWNER_WRITE_LC2,
+        pty_actElem_GC_OWNER_WRITE_LC1,
+        pty_actElem_UNKNOWN_WRITE_LC2,
+        pty_actElem_UNKNOWN_WRITE_LC1
+
+    main is
+    {
+        full_integrity_2
     }
 }
