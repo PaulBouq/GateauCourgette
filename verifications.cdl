@@ -60,7 +60,7 @@ event evt_recv_UNKNOWN_NACK_GC_READ   is { receive NACK_READ_GC_FOR_UNKNOWN from
 event evt_recv_UNKNOWN_NACK_LC1_READ  is { receive NACK_READ_LC1_FOR_UNKNOWN from {GC}1 to {env}1 }
 event evt_recv_UNKNOWN_NACK_LC2_READ  is { receive NACK_READ_LC2_FOR_UNKNOWN from {GC}1 to {env}1 }
 event evt_recv_GC_OWNER_NACK_LC1_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
-event evt_recv_GC_OWNER_NACK_LC2_READ is { receive NACK_READ_LC1_FOR_GC_OWNER from {GC}1 to {env}1 }
+event evt_recv_GC_OWNER_NACK_LC2_READ is { receive NACK_READ_LC2_FOR_GC_OWNER from {GC}1 to {env}1 }
 
 event evt_recv_ADMIN_ACK_LC1_READ is {receive ACK_READ_LC1_FOR_ADMIN from {GC}1 to {env}1 }
 event evt_recv_ADMIN_ACK_LC2_READ is {receive ACK_READ_LC2_FOR_ADMIN from {GC}1 to {env}1 }
