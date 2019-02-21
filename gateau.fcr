@@ -761,7 +761,7 @@ var
     FU_LC               : t_fifo,
     LC_FU               : t_fifo,
     
-    LC_PLC1             : t_fifo,
+    PLC_1               : t_fifo,
     PLC1_LC             : t_fifo,
     
     LC_PLC2             : t_fifo,
@@ -795,7 +795,7 @@ init
     FU_LC               := {||};
     LC_FU               := {||};
     
-    LC_PLC1             := {||};
+    PLC_1               := {||};
     PLC1_LC             := {||};
                 
     LC_PLC2             := {||};
@@ -817,9 +817,9 @@ par
     ||  Checkpoint(&CheckpFU_FU, &FU_CheckpFU, &CheckpFU_fireFU, &fireFU_CheckpFU)
     ||  Firewall(&CheckpFU_fireFU, &fireFU_CheckpFU)
     
-    ||  LC(&FU_LC, &LC_FU, &LC_PLC1, &PLC1_LC, &LC_PLC2, &PLC2_LC)
+    ||  LC(&FU_LC, &LC_FU, &PLC_1, &PLC1_LC, &LC_PLC2, &PLC2_LC)
     
-    ||  PLC(LC1, 0, &PLC1_LC, &LC_PLC1)
+    ||  PLC(LC1, 0, &PLC1_LC, &PLC_1)
     ||  PLC(LC2, 0, &PLC2_LC, &LC_PLC2)
 end
 

@@ -27,7 +27,7 @@ event evt_send_UNKNOWN_WRITE_LC2 is     { send UNKNOWN_WRITE_LC2 from {env}1 to 
 event evt_send_UNKNOWN_READ_GC is       { send UNKNOWN_READ_GC from {env}1 to {GC}1 }
 event evt_send_UNKNOWN_READ_LC1 is      { send UNKNOWN_READ_LC1 from {env}1 to {GC}1 }
 event evt_send_UNKNOWN_READ_LC2 is      { send UNKNOWN_READ_LC2 from {env}1 to {GC}1 }
-event evt_send_ADMIN_WRITE_NETWORK is {send ADMIN_WRITE_NETWORK from {env}1 to {GC}1 }
+event evt_send_ADMIN_WRITE_NETWORK is   {send ADMIN_WRITE_NETWORK from {env}1 to {GC}1 }
 
 
 event evt_recv_ADMIN_ACK_GC_WRITE is    { receive ACK_WRITE_GC_FOR_ADMIN from {GC}1 to {env}1 }
@@ -49,10 +49,19 @@ event evt_recv_GC_OWNER_NACK_LC2_READ is { receive NACK_READ_LC2_FOR_GC_OWNER fr
 event evt_recv_ADMIN_ACK_LC1_READ is {receive ACK_READ_LC1_FOR_ADMIN from {GC}1 to {env}1 }
 event evt_recv_ADMIN_ACK_LC2_READ is {receive ACK_READ_LC2_FOR_ADMIN from {GC}1 to {env}1 }
 
+event evt_recv_ADMIN_NACK_LC1_READ is {receive NACK_READ_LC1_FOR_ADMIN from {GC}1 to {env}1 }
+
 
 event evt_recv_ANY is                   { receive ANY from {GC}1 to {env}1 }
 event evt_send_END is                   { send REQ_END from {env}1 to {GC}1 }
 event evt_recv_END is                   { receive REQ_END from {env}1 to {GC}1 }
+
+
+// Events for Attacks
+
+event evt_send_ATT_READ_LC1     is {send UNKNOWN_READ_LC1 from {env}1 to {PLC}1 }
+event evt_send_ATT_READ_LC1_bis is {send ADMIN_READ_LC1 from {env}1 to {PLC}1 }
+
 
 // Integrity
 
@@ -134,6 +143,24 @@ activity full_confidentiality_2 is
 	[] actElem_GC_OWNER_READ_LC2
 }
 
+//attacker activity
+
+activity att_activity is
+{
+    event evt_send_ATT_READ_LC1; event evt_recv_UNKNOWN_NACK_LC1_READ
+}
+
+activity att_root_activity is
+{
+    event evt_send_ATT_READ_LC1_bis; event evt_recv_ADMIN_NACK_LC1_READ
+}
+
+
+activity att_composed is
+{
+       att_activity
+    [] att_root_activity
+}
 
 ///////////////////
 // Integrity
@@ -405,6 +432,21 @@ property pty_actElem_LC2_OWNER_WRITE_LC1 is
     waitRet -- / / evt_recv_ANY  /                      -> reject
 }
 
+// Observateurs pour les attaques
+property pty_actElem_FIRST_ATTACK is
+{
+    start -- / / evt_send_ATT_READ_LC1 / -> waitRet;
+    waitRet -- / / evt_recv_UNKNOWN_NACK_LC1_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
+property pty_actElem_ADMIN_ATTACK is
+{
+    start -- / / evt_send_ATT_READ_LC1_bis / -> waitRet;
+    waitRet -- / / evt_recv_ADMIN_NACK_LC1_READ / -> start;
+    waitRet -- / / evt_recv_ANY / -> reject
+}
+
 
 //--------------------------------------------------
 //              Contextes
@@ -436,8 +478,6 @@ cdl confidentiality_Refused_read_LC is
         full_confidentiality_2
     }
 }
-
-
 
 
 cdl availability_Full_Context is
@@ -478,5 +518,15 @@ cdl cdl_integrity_context_2 is {
     main is
     {
         full_integrity_2
+    }
+}
+
+cdl cdl_attack_context is {
+    properties
+        pty_actElem_FIRST_ATTACK,
+        pty_actElem_ADMIN_ATTACK
+    main is
+    {
+        att_composed
     }
 }
